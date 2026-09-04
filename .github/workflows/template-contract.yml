@@ -48,9 +48,9 @@ jobs:
       - name: Upload verified template
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: Combodo-PowerBI-Template-1.1.0
+          name: Combodo-PowerBI-Template-1.1.1
           path: |
-            artifacts/Combodo_PowerBI_Reporting_Template_1.1.0.pbit
+            artifacts/Combodo_PowerBI_Reporting_Template_1.1.1.pbit
             artifacts/SHA256SUMS.txt
           if-no-files-found: error
           retention-days: 7

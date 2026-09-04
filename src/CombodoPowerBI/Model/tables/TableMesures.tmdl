@@ -134,7 +134,7 @@
 			            'UserRequest_Period',
 			            FILTER (
 			                ALLSELECTED('UserRequest_Period'),
-			            	(YEAR([Start date (date)])*100)=year
+			            	(YEAR([Start date (date)]))=year
 			            ),
 			            FILTER(ALLSELECTED('UserRequest_Period'),UserRequest_Period[Team_Name]=team)
 			        )

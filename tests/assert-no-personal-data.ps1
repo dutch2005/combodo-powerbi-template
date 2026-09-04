@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$artifact = Join-Path $root 'artifacts/Combodo_PowerBI_Reporting_Template_1.1.0.pbit'
+$artifact = Join-Path $root 'artifacts/Combodo_PowerBI_Reporting_Template_1.1.1.pbit'
 $findings = [System.Collections.Generic.List[string]]::new()
 $patterns = [ordered]@{
 	InstanceAlias = '(?i)\b' + [char]100 + 'ata4\b'

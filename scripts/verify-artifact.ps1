@@ -9,8 +9,9 @@ param(
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $project = Join-Path $root 'src/CombodoPowerBI'
-$artifactName = 'Combodo_PowerBI_Reporting_Template_1.1.0.pbit'
+$artifactName = 'Combodo_PowerBI_Reporting_Template_1.1.1.pbit'
 $artifact = Join-Path $root "artifacts/$artifactName"
+$rootArtifact = Join-Path $root 'Combodo_PowerBI_Reporting_Template_V1.07_2210025.pbit'
 $checksumFile = Join-Path $root 'artifacts/SHA256SUMS.txt'
 $temporaryRoot = Join-Path $root '.cache/artifact-verify'
 $temporary = Join-Path $temporaryRoot ([guid]::NewGuid().ToString('N'))
@@ -65,6 +66,7 @@ if (-not (Test-Path -LiteralPath $artifact -PathType Leaf)) { throw "Missing rel
 $expectedHash = ((Get-Content -LiteralPath $checksumFile | Where-Object { $_ -match [regex]::Escape($artifactName) }) -split '\s+')[0]
 $actualHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $artifact).Hash
 if ($actualHash -cne $expectedHash) { throw "Artifact checksum mismatch: expected $expectedHash, got $actualHash." }
+if ((Get-FileHash -Algorithm SHA256 -LiteralPath $rootArtifact).Hash -cne $actualHash) { throw 'Root PBIT must be byte-identical to the canonical 1.1.1 artifact.' }
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $archive = [System.IO.Compression.ZipFile]::OpenRead($artifact)
@@ -103,6 +105,12 @@ try {
 		if ($artifactExpressions.Count -ne 1 -or -not $sourceMatch.Success) { throw "PBIT model expression is missing or duplicated: $name" }
 		if ((Normalize-Expression $artifactExpressions[0].expression) -cne (Normalize-Expression $sourceMatch.Groups[1].Value)) { throw "PBIT model expression differs from source: $name" }
 	}
+	$measureTable = @($model.model.tables | Where-Object name -ceq 'TableMesures')
+	$yearMeasure = @($measureTable[0].measures | Where-Object name -ceq 'Count UR Create Team An')
+	$yearExpression = (@($yearMeasure[0].expression) -join "`n")
+	if ($measureTable.Count -ne 1 -or $yearMeasure.Count -ne 1 -or -not $yearExpression.Contains('(YEAR([Start date (date)]))=year') -or $yearExpression.Contains('(YEAR([Start date (date)])*100)=year')) {
+		throw 'PBIT contains the defective yearly team measure.'
+	}
 	foreach ($tableName in @('UserRequest','UserRequest_Period','TeamList','FirstTeam_Affected','Calendrier','Calendrier_ResolutionDate')) {
 		$artifactTables = @($model.model.tables | Where-Object name -ceq $tableName)
 		$tableSource = [System.IO.File]::ReadAllText((Join-Path $project "Model/tables/$tableName.tmdl"))
@@ -115,6 +123,11 @@ try {
 	$pageCount = @($layout.sections).Count
 	$visualCount = @($layout.sections | ForEach-Object { $_.visualContainers }).Count
 	if ($pageCount -ne 10 -or $visualCount -ne 76) { throw "Unexpected embedded report layout: $pageCount pages and $visualCount visuals." }
+	$yearSlicerIds = @('27db418e3b6a5e7ca807','9155de0972872601d5b3')
+	foreach ($visualId in $yearSlicerIds) {
+		$visuals = @($layout.sections.visualContainers | Where-Object { (($_.config | ConvertFrom-Json).name) -ceq $visualId })
+		if ($visuals.Count -ne 1 -or $visuals[0].config.Contains("'2022'")) { throw "PBIT retains stale 2022 state in visual $visualId." }
+	}
 } finally { $archive.Dispose() }
 
 if ($Extractor -eq 'Archive') {
