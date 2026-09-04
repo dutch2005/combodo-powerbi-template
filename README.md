@@ -4,7 +4,7 @@ This repository contains the source and release template for the iTop Helpdesk P
 
 ## Install version 1.1.0
 
-1. Install **Reporting for PowerBI - Helpdesk view 1.1.0** in iTop first.
+1. Install **Reporting for PowerBI - Helpdesk view 1.1.1** in iTop first.
 2. In iTop, open the Query Phrasebook and copy either the QueryOQL details URLs or the `export-v2.php` URLs for:
    - PowerBI - Integration - User Requests updated over the last 12 months
    - PowerBI - Integration - List teams' name - Combodo
@@ -28,7 +28,7 @@ This path works the same for every iTop-supported left-to-right account language
 - **Invalid QueryOQL URL:** use either a QueryOQL details URL containing its `id` or an `export-v2.php` URL containing its `query` id.
 - **HTML instead of CSV:** verify the account credentials and export permission; the response may be a login or error page.
 - **HTTP error:** verify the iTop URL, saved-query identifier, access rights, and credentials.
-- **Missing internal fields:** install extension 1.1.0 and make sure the URL points to its matching Query Phrasebook entry.
+- **Missing internal fields:** install extension 1.1.1 and make sure the URL points to its matching Query Phrasebook entry.
 - **Malformed CSV or date/time:** verify that the response has not been rewritten by a proxy and that the URL is the original iTop export URL.
 
 Errors name the failing query but never include the password or authorization value. The optional first-team URL can be left blank; it then produces an empty typed table without a web request.
@@ -79,4 +79,4 @@ Use the same three paths with `./scripts/verify-artifact.ps1 -Extractor Desktop`
 
 Automated CI statically validates the EN/DE/NL/FR fixture shapes, fixed internal headers and dates, sanitized negative fixtures, source/model parity, archive structure, embedded Mashup/model parity, page count, visual count, artifact checksum, and absence of cached or environment-specific personal data. It also executes the production URL builder in Microsoft's Power Query runtime against six deterministic cases. Locked Desktop verification additionally re-extracts and compares the full report, model, and Mashup trees. A live refresh against a reachable iTop instance has not been performed in this repository environment; do not interpret these checks as proof of production credentials, connectivity, instance permissions, or end-to-end live refresh.
 
-The Query Phrasebook extension is maintained at [dutch2005/combodo-powerbi-integration](https://github.com/dutch2005/combodo-powerbi-integration).
+The matching Query Phrasebook extension is maintained at [Combodo/combodo-powerbi-integration](https://github.com/Combodo/combodo-powerbi-integration).
