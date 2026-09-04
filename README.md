@@ -64,6 +64,6 @@ After obtaining the locked pbi-tools Desktop executable, Mono.Cecil 0.11.5, and 
 
 ## Verification boundary
 
-Automated checks cover the EN/DE/NL/FR fixtures, fixed internal headers and dates, negative response contracts, source/model parity, binary Mashup parity, page count, visual count, and artifact checksum. A live refresh against a reachable iTop instance has not been performed in this repository environment; do not interpret the automated checks as proof of production credentials, connectivity, or instance permissions.
+Automated checks statically validate the EN/DE/NL/FR fixture shapes, fixed internal headers and dates, presence of sanitized negative fixtures, source/model parity, binary Mashup parity, page count, visual count, and artifact checksum. They do not execute those fixtures in the Power Query engine. A live refresh against a reachable iTop instance has not been performed in this repository environment; do not interpret the checks as proof of runtime transformations, production credentials, connectivity, or instance permissions.
 
 The Query Phrasebook extension is maintained at [dutch2005/combodo-powerbi-integration](https://github.com/dutch2005/combodo-powerbi-integration).

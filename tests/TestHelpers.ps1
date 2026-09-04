@@ -36,11 +36,20 @@ function Get-TreeFingerprint([string]$TreeRoot, [string[]]$Paths)
 function Get-ModelStructureFingerprint([string]$ModelRoot)
 {
 	$mutableTables = @('UserRequest.tmdl','UserRequest_Period.tmdl','TeamList.tmdl','FirstTeam_Affected.tmdl')
-	$lines = @(Get-ChildItem -LiteralPath $ModelRoot -File -Recurse | Where-Object Name -ne 'expressions.tmdl' | Sort-Object FullName | ForEach-Object {
+	$mutableExpressions = @('BuildExportUrl','FetchQueryCsv','RequireColumns','ParseITopDateTime','UserRequestFields','UserRequestOutputFields','ShapeUserRequest','ShapeTeamList','ShapeFirstTeam','EmptyFirstTeam')
+	$lines = @(Get-ChildItem -LiteralPath $ModelRoot -File -Recurse | Sort-Object FullName | ForEach-Object {
 		$relative = $_.FullName.Substring($ModelRoot.Length + 1).Replace('\','/')
 		if ($mutableTables -contains $_.Name) {
 			$content = [System.IO.File]::ReadAllText($_.FullName).Replace("`r`n", "`n").Replace("`r", "`n").TrimEnd([char]10) + "`n"
 			$content = [regex]::Replace($content, '(?ms)(^\tpartition .+? = m\n\t\tmode: import\n)\t\tsource =.*?(?=^\tannotation |\z)', "`$1`t`tsource = <locale-neutral-query>`n`n")
+		} elseif ($_.Name -eq 'expressions.tmdl') {
+			$content = [System.IO.File]::ReadAllText($_.FullName).Replace("`r`n", "`n").Replace("`r", "`n").TrimEnd([char]10) + "`n"
+			$names = ($mutableExpressions | ForEach-Object { [regex]::Escape($_) }) -join '|'
+			$content = [regex]::Replace($content, "(?ms)^expression ($names)\s*=.*?(?=^expression |\z)", 'expression $1 = <locale-neutral-expression>' + "`n`n")
+		} else {
+			$content = [System.IO.File]::ReadAllText($_.FullName).Replace("`r`n", "`n").Replace("`r", "`n").TrimEnd([char]10) + "`n"
+		}
+		if ($mutableTables -contains $_.Name -or $_.Name -eq 'expressions.tmdl') {
 			$bytes = [System.Text.UTF8Encoding]::new($false).GetBytes($content)
 			$sha = [System.Security.Cryptography.SHA256]::Create()
 			try { $fileHash = ([System.BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-','') }

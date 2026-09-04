@@ -30,7 +30,7 @@ if ($packagingHash -cne $lock.desktopBuild.packagingDllSha256) { throw 'Unexpect
 
 $patchedDirectory = Join-Path $root '.cache/pbi-tools-desktop'
 $patchedExe = Join-Path $patchedDirectory 'pbi-tools.exe'
-& (Join-Path $PSScriptRoot 'patch-pbi-tools.ps1') -InputExe $PbiToolsExe -PackagingDll $packagingDll -MonoCecilDll $MonoCecilDll -OutputExe $patchedExe
+& (Join-Path $PSScriptRoot 'patch-pbi-tools.ps1') -InputExe $PbiToolsExe -PackagingDll $packagingDll -MonoCecilDll $MonoCecilDll -ExpectedMonoCecilSha256 $lock.desktopBuild.monoCecilSha256 -OutputExe $patchedExe
 if ((Get-FileHash -Algorithm SHA256 -LiteralPath $patchedExe).Hash -cne $lock.desktopBuild.patchedExeSha256) { throw 'Patched pbi-tools hash does not match the reviewed build.' }
 Copy-Item -LiteralPath ([System.IO.Path]::ChangeExtension($PbiToolsExe, '.exe.config')) -Destination ([System.IO.Path]::ChangeExtension($patchedExe, '.exe.config')) -Force
 $env:PBITOOLS_PbiInstallDir = (Resolve-Path -LiteralPath $PbiInstallDir).Path

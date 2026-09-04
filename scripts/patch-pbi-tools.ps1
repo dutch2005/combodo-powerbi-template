@@ -3,11 +3,16 @@ param(
 	[Parameter(Mandatory)][string]$InputExe,
 	[Parameter(Mandatory)][string]$PackagingDll,
 	[Parameter(Mandatory)][string]$MonoCecilDll,
+	[Parameter(Mandatory)][string]$ExpectedMonoCecilSha256,
 	[Parameter(Mandatory)][string]$OutputExe
 )
 
 $ErrorActionPreference = 'Stop'
-Add-Type -Path (Resolve-Path -LiteralPath $MonoCecilDll)
+$monoCecilPath = (Resolve-Path -LiteralPath $MonoCecilDll).Path
+if ((Get-FileHash -Algorithm SHA256 -LiteralPath $monoCecilPath).Hash -cne $ExpectedMonoCecilSha256) {
+	throw 'Unexpected Mono.Cecil library; use the locked 0.11.5 netstandard2.0 binary.'
+}
+Add-Type -Path $monoCecilPath
 $dependencyDirectory = Join-Path ([System.IO.Path]::GetDirectoryName($OutputExe)) 'resolver'
 [System.IO.Directory]::CreateDirectory($dependencyDirectory) | Out-Null
 $bootstrap = [Mono.Cecil.ModuleDefinition]::ReadModule((Resolve-Path -LiteralPath $InputExe))

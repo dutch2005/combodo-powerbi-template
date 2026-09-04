@@ -12,16 +12,26 @@ $project = Join-Path $root 'src/CombodoPowerBI'
 $artifactName = 'Combodo_PowerBI_Reporting_Template_1.1.0.pbit'
 $artifact = Join-Path $root "artifacts/$artifactName"
 $checksumFile = Join-Path $root 'artifacts/SHA256SUMS.txt'
-$temporary = Join-Path $root '.cache/artifact-verify'
+$temporaryRoot = Join-Path $root '.cache/artifact-verify'
+$temporary = Join-Path $temporaryRoot ([guid]::NewGuid().ToString('N'))
 . (Join-Path $root 'tests/TestHelpers.ps1')
 
-function Remove-VerifiedTemporaryDirectory
+function Assert-NoReparsePoint([string]$Path)
+{
+	$current = [System.IO.DirectoryInfo]::new([System.IO.Path]::GetFullPath($Path))
+	while ($null -ne $current) {
+		if ($current.Exists -and ($current.Attributes -band [System.IO.FileAttributes]::ReparsePoint)) { throw "Unsafe reparse point in temporary path: $($current.FullName)" }
+		$current = $current.Parent
+	}
+}
+
+function Remove-InvocationTemporaryDirectory
 {
 	if (-not (Test-Path -LiteralPath $temporary)) { return }
+	Assert-NoReparsePoint $temporary
 	$resolved = (Resolve-Path -LiteralPath $temporary).Path
-	$expected = Join-Path $root '.cache/artifact-verify'
-	if (-not $resolved.Equals($expected, [System.StringComparison]::OrdinalIgnoreCase)) { throw "Unsafe temporary path: $resolved" }
-	Remove-Item -LiteralPath $resolved -Recurse -Force
+	if (-not $resolved.Equals($temporary, [System.StringComparison]::OrdinalIgnoreCase)) { throw "Unsafe temporary path: $resolved" }
+	Remove-Item -LiteralPath $temporary -Recurse -Force
 }
 
 & (Join-Path $root 'tests/assert-contract.ps1')
@@ -42,15 +52,18 @@ try {
 	if ($dataMashup.Length -le 0) { throw 'PBIT contains an empty DataMashup.' }
 } finally { $archive.Dispose() }
 
-Remove-VerifiedTemporaryDirectory
+Assert-NoReparsePoint $temporaryRoot
+[System.IO.Directory]::CreateDirectory($temporaryRoot) | Out-Null
 try {
 	if ($Extractor -eq 'Docker') {
-		& (Join-Path $root 'scripts/pbi-tools.ps1') -Action Extract -Source "artifacts/$artifactName" -Destination '.cache/artifact-verify'
+		$relativeTemporary = $temporary.Substring($root.Length + 1).Replace('\','/')
+		& (Join-Path $root 'scripts/pbi-tools.ps1') -Action Extract -Source "artifacts/$artifactName" -Destination $relativeTemporary
 	} else {
 		foreach ($value in @($PbiInstallDir,$PbiToolsExe,$MonoCecilDll)) {
 			if ([string]::IsNullOrWhiteSpace($value)) { throw 'Desktop extraction requires PbiInstallDir, PbiToolsExe, and MonoCecilDll.' }
 		}
-		& (Join-Path $root 'scripts/pbi-tools-desktop.ps1') -Action Extract -Source "artifacts/$artifactName" -Destination '.cache/artifact-verify' -PbiInstallDir $PbiInstallDir -PbiToolsExe $PbiToolsExe -MonoCecilDll $MonoCecilDll
+		$relativeTemporary = $temporary.Substring($root.Length + 1).Replace('\','/')
+		& (Join-Path $root 'scripts/pbi-tools-desktop.ps1') -Action Extract -Source "artifacts/$artifactName" -Destination $relativeTemporary -PbiInstallDir $PbiInstallDir -PbiToolsExe $PbiToolsExe -MonoCecilDll $MonoCecilDll
 	}
 	$groups = @(
 		@('Report','StaticResources','DiagramLayout.json','ReportMetadata.json','ReportSettings.json'),
@@ -68,5 +81,5 @@ try {
 	$pageCount = @(Get-ChildItem -LiteralPath (Join-Path $temporary 'Report/sections') -Directory).Count
 	$visualCount = @(Get-ChildItem -LiteralPath (Join-Path $temporary 'Report/sections') -Filter 'visualContainer.json' -File -Recurse).Count
 	if ($pageCount -ne 10 -or $visualCount -ne 76) { throw "Unexpected report layout: $pageCount pages and $visualCount visuals." }
-} finally { Remove-VerifiedTemporaryDirectory }
+} finally { Remove-InvocationTemporaryDirectory }
 Write-Output "Artifact verified: $actualHash ($pageCount pages, $visualCount visuals, DataMashup present)."
