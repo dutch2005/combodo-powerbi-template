@@ -1,0 +1,164 @@
+[
+  {
+    "name": "Filter118c4807322ea473bac4",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "UserRequest"
+          }
+        },
+        "Property": "Last update (date)"
+      }
+    },
+    "type": "Categorical",
+    "howCreated": 1,
+    "ordinal": 0
+  },
+  {
+    "name": "Filter8698272e746b2daeb296",
+    "expression": {
+      "HierarchyLevel": {
+        "Expression": {
+          "Hierarchy": {
+            "Expression": {
+              "PropertyVariationSource": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "UserRequest"
+                  }
+                },
+                "Name": "Variation",
+                "Property": "Last update (date)"
+              }
+            },
+            "Hierarchy": "Hiérarchie de dates"
+          }
+        },
+        "Level": "Jour"
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 1
+  },
+  {
+    "name": "Filterf3453ea73b80197a1b90",
+    "expression": {
+      "Aggregation": {
+        "Expression": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "UserRequest"
+              }
+            },
+            "Property": "Ref"
+          }
+        },
+        "Function": 5
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 2
+  },
+  {
+    "name": "Filterd66e11f088e40b58a3a1",
+    "expression": {
+      "Aggregation": {
+        "Expression": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "UserRequest"
+              }
+            },
+            "Property": "Last update (date)"
+          }
+        },
+        "Function": 3
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 3
+  },
+  {
+    "name": "Filter92eaaea67623b761c44e",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "UserRequest"
+          }
+        },
+        "Property": "Status"
+      }
+    },
+    "filter": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "u",
+          "Entity": "UserRequest",
+          "Type": 0
+        }
+      ],
+      "Where": [
+        {
+          "Condition": {
+            "Not": {
+              "Expression": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "u"
+                          }
+                        },
+                        "Property": "Status"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'New'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "type": "Categorical",
+    "howCreated": 1,
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "isInvertedSelectionMode": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ordinal": 4
+  }
+]

@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Filterfc70f48fcb680d05780d",
+    "expression": {
+      "Measure": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "TableMesures"
+          }
+        },
+        "Property": "Taux_TTO_over"
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 0
+  }
+]

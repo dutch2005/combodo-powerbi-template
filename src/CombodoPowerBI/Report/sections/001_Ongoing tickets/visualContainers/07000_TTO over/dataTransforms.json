@@ -1,0 +1,115 @@
+{
+  "objects": {
+    "labels": [
+      {
+        "properties": {
+          "show": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "axis": [
+      {
+        "properties": {
+          "min": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          },
+          "max": {
+            "expr": {
+              "Literal": {
+                "Value": "1D"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "projectionOrdering": {
+    "Y": [
+      0
+    ]
+  },
+  "queryMetadata": {
+    "Select": [
+      {
+        "Restatement": "Taux_TTO_over",
+        "Name": "TableMesures.Taux_TTO_over",
+        "Type": 1,
+        "Format": "0.00\\ %;-0.00\\ %;0.00\\ %"
+      }
+    ],
+    "Filters": [
+      {
+        "type": 0,
+        "expression": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "UserRequest"
+              }
+            },
+            "Property": "Operational status"
+          }
+        }
+      },
+      {
+        "type": 2,
+        "expression": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "TableMesures"
+              }
+            },
+            "Property": "Taux_TTO_over"
+          }
+        }
+      }
+    ]
+  },
+  "visualElements": [
+    {
+      "DataRoles": [
+        {
+          "Name": "Y",
+          "Projection": 0,
+          "isActive": false
+        }
+      ]
+    }
+  ],
+  "selects": [
+    {
+      "displayName": "Taux_TTO_over",
+      "format": "0.00\\ %;-0.00\\ %;0.00\\ %",
+      "queryName": "TableMesures.Taux_TTO_over",
+      "roles": {
+        "Y": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Measure": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "TableMesures"
+            }
+          },
+          "Property": "Taux_TTO_over"
+        }
+      }
+    }
+  ]
+}

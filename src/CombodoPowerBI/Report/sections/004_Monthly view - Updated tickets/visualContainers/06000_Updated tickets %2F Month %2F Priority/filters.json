@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Filter4d74bc6da0a00e6d420a",
+    "expression": {
+      "Aggregation": {
+        "Expression": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "UserRequest"
+              }
+            },
+            "Property": "Ref"
+          }
+        },
+        "Function": 5
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 0
+  },
+  {
+    "name": "Filter5935fce0beaed7c359db",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "UserRequest"
+          }
+        },
+        "Property": "Team_Name"
+      }
+    },
+    "type": "Categorical",
+    "howCreated": 1,
+    "isHiddenInViewMode": false,
+    "ordinal": 1
+  },
+  {
+    "name": "Filterd8341a4930db6801687c",
+    "expression": {
+      "HierarchyLevel": {
+        "Expression": {
+          "Hierarchy": {
+            "Expression": {
+              "PropertyVariationSource": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "UserRequest"
+                  }
+                },
+                "Name": "Variation",
+                "Property": "Start date (date)"
+              }
+            },
+            "Hierarchy": "Hiérarchie de dates"
+          }
+        },
+        "Level": "Mois"
+      }
+    },
+    "type": "Categorical",
+    "howCreated": 1,
+    "isHiddenInViewMode": false,
+    "ordinal": 2
+  },
+  {
+    "name": "Filter03b9323247a5e0e1060d",
+    "expression": {
+      "HierarchyLevel": {
+        "Expression": {
+          "Hierarchy": {
+            "Expression": {
+              "PropertyVariationSource": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "UserRequest"
+                  }
+                },
+                "Name": "Variation",
+                "Property": "Last update (date)"
+              }
+            },
+            "Hierarchy": "Hiérarchie de dates"
+          }
+        },
+        "Level": "Mois"
+      }
+    },
+    "type": "Categorical",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 3
+  },
+  {
+    "name": "Filterb3555af1070d40d52000",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "UserRequest"
+          }
+        },
+        "Property": "Priority"
+      }
+    },
+    "type": "Categorical",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 4
+  }
+]

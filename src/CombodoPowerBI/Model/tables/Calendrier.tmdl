@@ -1,0 +1,161 @@
+﻿table Calendrier
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		summarizeBy: count
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+		annotation DataTypeAtRefresh = Int64#####not a type
+
+		annotation PBI_NameAtRefresh = DateKey
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: 31334086-66bd-441f-b07d-f33bb86c0ae6
+			defaultHierarchy: LocalDateTable_72237624-51d9-4d7c-a00e-b2e6ceaf0d5c.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongDate" FormatString="D" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Date
+
+		annotation PBI_NameAtRefresh = Date
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Day
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Day
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Day
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column MonthKey
+		dataType: int64
+		formatString: 0
+		summarizeBy: count
+		sourceColumn: MonthKey
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+		annotation DataTypeAtRefresh = Int64#####not a type
+
+		annotation PBI_NameAtRefresh = MonthKey
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Month
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Month
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column QuarterKey
+		dataType: int64
+		formatString: 0
+		summarizeBy: count
+		sourceColumn: QuarterKey
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+		annotation DataTypeAtRefresh = Int64#####not a type
+
+		annotation PBI_NameAtRefresh = QuarterKey
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Quarter
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Quarter
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column YearKey
+		dataType: int64
+		formatString: 0
+		summarizeBy: count
+		sourceColumn: YearKey
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+		annotation DataTypeAtRefresh = Int64#####not a type
+
+		annotation PBI_NameAtRefresh = YearKey
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Year
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Year
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	partition Calendrier-031b9362-62b2-42be-9e24-c09262cef6ec = m
+		mode: import
+		source =
+				let
+				    Source = Requête1(#date(2021, 1, 1), #date(2024, 12, 31), null)
+				in
+				    Source
+
+	annotation PBI_DescriptionAtRefresh
+
+	annotation PBI_ResultType = Table
+

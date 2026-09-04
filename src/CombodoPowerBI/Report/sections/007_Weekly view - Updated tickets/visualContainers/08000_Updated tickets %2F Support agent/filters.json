@@ -1,0 +1,113 @@
+[
+  {
+    "name": "Filterf4e202d20e3679a07d17",
+    "expression": {
+      "Aggregation": {
+        "Expression": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "UserRequest"
+              }
+            },
+            "Property": "Ref"
+          }
+        },
+        "Function": 5
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 0
+  },
+  {
+    "name": "Filter118c4807322ea473bac4",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "UserRequest"
+          }
+        },
+        "Property": "Last update (date)"
+      }
+    },
+    "type": "Categorical",
+    "howCreated": 1,
+    "ordinal": 1
+  },
+  {
+    "name": "Filter69baa4dbd7c750d42637",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "UserRequest"
+          }
+        },
+        "Property": "Agent Name"
+      }
+    },
+    "type": "Categorical",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 2
+  },
+  {
+    "name": "Filter676855db20469bd7a5aa",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "UserRequest"
+          }
+        },
+        "Property": "Operational status"
+      }
+    },
+    "filter": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "u",
+          "Entity": "UserRequest",
+          "Type": 0
+        }
+      ],
+      "Where": [
+        {
+          "Condition": {
+            "In": {
+              "Expressions": [
+                {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Source": "u"
+                      }
+                    },
+                    "Property": "Operational status"
+                  }
+                }
+              ],
+              "Values": [
+                [
+                  {
+                    "Literal": {
+                      "Value": "'Resolved'"
+                    }
+                  }
+                ]
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "type": "Categorical",
+    "howCreated": 1,
+    "objects": {},
+    "ordinal": 3
+  }
+]

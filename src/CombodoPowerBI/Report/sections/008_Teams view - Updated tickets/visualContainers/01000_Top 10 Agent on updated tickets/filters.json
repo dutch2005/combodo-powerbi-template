@@ -1,0 +1,41 @@
+[
+  {
+    "name": "Filter5fd6df03da0a099c1360",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "UserRequest"
+          }
+        },
+        "Property": "Agent Name"
+      }
+    },
+    "type": "TopN",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 0
+  },
+  {
+    "name": "Filtere33590f32ba17604804e",
+    "expression": {
+      "Aggregation": {
+        "Expression": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "UserRequest"
+              }
+            },
+            "Property": "Ref"
+          }
+        },
+        "Function": 5
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 1
+  }
+]

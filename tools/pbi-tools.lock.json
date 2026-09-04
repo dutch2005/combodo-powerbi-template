@@ -1,0 +1,6 @@
+{
+  "version": "1.2.0",
+  "image": "ghcr.io/pbi-tools/pbi-tools-core:1.2.0@sha256:f58b987d9adc48b43fbb5016d4da510d92768743028d67d604cf22db956c2e84",
+  "source": "https://github.com/pbi-tools/pbi-tools/pkgs/container/pbi-tools-core/331983160?tag=1.2.0",
+  "legacySha256": "8DDD9A0FDC9AFC1D8DE2401953B4DF89BB8AC289734976F50F3D724620DB1014"
+}

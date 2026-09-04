@@ -1,0 +1,272 @@
+{
+  "name": "4a6324e82bc6840534dc",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 25.432399512789281,
+        "y": 494.61632155907432,
+        "z": 4000,
+        "width": 750.694275274056,
+        "height": 199.95127892813642,
+        "tabOrder": 14000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "lineChart",
+    "projections": {
+      "Category": [
+        {
+          "queryRef": "UserRequest.Resolution date (date).Variation.Hiérarchie de dates.Mois",
+          "active": true
+        }
+      ],
+      "Y": [
+        {
+          "queryRef": "TableMesures.Taux_TTR_over"
+        },
+        {
+          "queryRef": "TableMesures.Taux_TTO_over"
+        }
+      ],
+      "Tooltips": [
+        {
+          "queryRef": "TableMesures.Average_Resolution_Delay_Time"
+        }
+      ],
+      "Y2": [
+        {
+          "queryRef": "TableMesures.Average_Resolution_Delay"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "u",
+          "Entity": "UserRequest",
+          "Type": 0
+        },
+        {
+          "Name": "t",
+          "Entity": "TableMesures",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "PropertyVariationSource": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Source": "u"
+                      }
+                    },
+                    "Name": "Variation",
+                    "Property": "Resolution date (date)"
+                  }
+                },
+                "Hierarchy": "Hiérarchie de dates"
+              }
+            },
+            "Level": "Mois"
+          },
+          "Name": "UserRequest.Resolution date (date).Variation.Hiérarchie de dates.Mois"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "t"
+              }
+            },
+            "Property": "Taux_TTR_over"
+          },
+          "Name": "TableMesures.Taux_TTR_over"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "t"
+              }
+            },
+            "Property": "Taux_TTO_over"
+          },
+          "Name": "TableMesures.Taux_TTO_over"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "t"
+              }
+            },
+            "Property": "Average_Resolution_Delay_Time"
+          },
+          "Name": "TableMesures.Average_Resolution_Delay_Time"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "t"
+              }
+            },
+            "Property": "Average_Resolution_Delay"
+          },
+          "Name": "TableMesures.Average_Resolution_Delay"
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "filterSortOrder": 3,
+    "objects": {
+      "zoom": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "seriesLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "legend": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'TTO over & TTR over / Month'"
+                }
+              }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'left'"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dropShadow": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 1,
+                      "Percent": 0.4
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

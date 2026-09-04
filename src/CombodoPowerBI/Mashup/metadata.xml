@@ -1,0 +1,503 @@
+<LocalPackageMetadataFile>
+  <Items>
+    <Item>
+      <ItemLocation>
+        <ItemType>AllFormulas</ItemType>
+        <ItemPath />
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsTypeDetectionEnabled" Value="sTrue" />
+        <Entry Type="RunBackgroundAnalysis" Value="sFalse" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="IsDirectQuery" Value="l0" />
+        <Entry Type="LastAnalysisServicesFormulaText" Value="s{&quot;IncludesReferencedQueries&quot;:false,&quot;RootFormulaText&quot;:&quot;let\n    #\&quot;UserName\&quot;=user_login,\n    #\&quot;Password\&quot;=user_password,\n    #\&quot;Header\&quot; = Binary.ToText(Text.ToBinary(#\&quot;UserName\&quot;\u0026\&quot;:\&quot; \u0026 #\&quot;Password\&quot;)),\n    #\&quot;BaseURL\&quot; = url_user_request_itop,\n    Source = Web.Page(Web.Contents(#\&quot;BaseURL\&quot;, [Headers=[Authorization=\&quot;Basic \&quot; \u0026 #\&quot;Header\&quot;]])),\n    Data0 = Source{0}[Data],\n    #\&quot;En-têtes promus\&quot; = Table.PromoteHeaders(Data0, [PromoteAllScalars=true]),\n     #\&quot;Type modifié\&quot; = Table.TransformColumnTypes(#\&quot;En-têtes promus\&quot;,{{\&quot;Ref\&quot;, type text}}),\n     #\&quot;Type modifié1\&quot; = Table.TransformColumnTypes(#\&quot;Type modifié\&quot;,{{\&quot;Resolution date (date)\&quot;, type date}, {\&quot;Assignment date (date)\&quot;, type date}, {\&quot;Start date (date)\&quot;, type date}, {\&quot;Start date (time)\&quot;, type time}, {\&quot;End date (date)\&quot;, type date}, {\&quot;End date (time)\&quot;, type time}, {\&quot;Last update (date)\&quot;, type date}, {\&quot;Last update (time)\&quot;, type time}, {\&quot;Assignment date (time)\&quot;, type time}, {\&quot;Resolution date (time)\&quot;, type time}, {\&quot;Last pending date (date)\&quot;, type date}, {\&quot;Last pending date (time)\&quot;, type time}, {\&quot;TTO Deadline\&quot;, type datetime}, {\&quot;TTR Deadline\&quot;, type datetime}, {\&quot;Resolution delay\&quot;, Int64.Type}}),\n    #\&quot;Colonnes renommées\&quot; = Table.RenameColumns(#\&quot;Type modifié1\&quot;,{{\&quot;Team_1\&quot;, \&quot;Team_Name\&quot;}}),\n    #\&quot;Valeur remplacée\&quot; = Table.ReplaceValue(#\&quot;Colonnes renommées\&quot;,null,0,Replacer.ReplaceValue,{\&quot;Resolution delay\&quot;})\nin\n    #\&quot;Valeur remplacée\&quot;&quot;,&quot;ReferencedQueriesFormulaText&quot;:{}}" />
+        <Entry Type="IsLastAnalysisServicesFormulaTextCollection" Value="l1" />
+        <Entry Type="LoadToReportDisabled" Value="l0" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.1763835Z" />
+        <Entry Type="NavigationStepName" Value="sNavigation" />
+        <Entry Type="ResultType" Value="sTable" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest/UserName</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest/Password</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest/Header</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest/BaseURL</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest/Source</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest/Data0</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest/En-t%C3%AAtes%20promus</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest/Type%20modifi%C3%A9</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest/Type%20modifi%C3%A91</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest/Colonnes%20renomm%C3%A9es</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest/Valeur%20remplac%C3%A9e</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="IsDirectQuery" Value="l0" />
+        <Entry Type="LastAnalysisServicesFormulaText" Value="s{&quot;IncludesReferencedQueries&quot;:false,&quot;RootFormulaText&quot;:&quot;let\n    #\&quot;UserName\&quot;=user_login,\n    #\&quot;Password\&quot;=user_password,\n    #\&quot;Header\&quot; = Binary.ToText(Text.ToBinary(#\&quot;UserName\&quot;\u0026\&quot;:\&quot; \u0026 #\&quot;Password\&quot;)),\n    #\&quot;BaseURL\&quot; = url_user_request_itop,\n    Source = Web.Page(Web.Contents(#\&quot;BaseURL\&quot;, [Headers=[Authorization=\&quot;Basic \&quot; \u0026 #\&quot;Header\&quot;]])),\n    Data0 = Source{0}[Data],\n    #\&quot;En-têtes promus\&quot; = Table.PromoteHeaders(Data0, [PromoteAllScalars=true]),\n     #\&quot;Type modifié\&quot; = Table.TransformColumnTypes(#\&quot;En-têtes promus\&quot;,{{\&quot;Ref\&quot;, type text}}),\n     #\&quot;Type modifié1\&quot; = Table.TransformColumnTypes(#\&quot;Type modifié\&quot;,{{\&quot;Resolution date (date)\&quot;, type date}, {\&quot;Assignment date (date)\&quot;, type date}, {\&quot;Start date (date)\&quot;, type date}, {\&quot;Start date (time)\&quot;, type time}, {\&quot;End date (date)\&quot;, type date}, {\&quot;End date (time)\&quot;, type time}, {\&quot;Last update (date)\&quot;, type date}, {\&quot;Last update (time)\&quot;, type time}, {\&quot;Assignment date (time)\&quot;, type time}, {\&quot;Resolution date (time)\&quot;, type time}, {\&quot;Last pending date (date)\&quot;, type date}, {\&quot;Last pending date (time)\&quot;, type time}, {\&quot;TTO Deadline\&quot;, type datetime}, {\&quot;TTR Deadline\&quot;, type datetime}, {\&quot;Resolution delay\&quot;, Int64.Type}}),\n    #\&quot;Colonnes renommées\&quot; = Table.RenameColumns(#\&quot;Type modifié1\&quot;,{{\&quot;Team_1\&quot;, \&quot;Team_Name\&quot;}}),\n    #\&quot;Valeur remplacée\&quot; = Table.ReplaceValue(#\&quot;Colonnes renommées\&quot;,null,0,Replacer.ReplaceValue,{\&quot;Resolution delay\&quot;})\nin\n    #\&quot;Valeur remplacée\&quot;&quot;,&quot;ReferencedQueriesFormulaText&quot;:{}}" />
+        <Entry Type="IsLastAnalysisServicesFormulaTextCollection" Value="l1" />
+        <Entry Type="LoadToReportDisabled" Value="l0" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.1763835Z" />
+        <Entry Type="NavigationStepName" Value="sNavigation" />
+        <Entry Type="ResultType" Value="sTable" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period/UserName</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period/Password</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period/Header</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period/BaseURL</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period/Source</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period/Data0</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period/En-t%C3%AAtes%20promus</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period/Type%20modifi%C3%A9</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period/Type%20modifi%C3%A91</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period/Colonnes%20renomm%C3%A9es</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/UserRequest_Period/Valeur%20remplac%C3%A9e</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TeamList</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="IsDirectQuery" Value="l0" />
+        <Entry Type="LastAnalysisServicesFormulaText" Value="s{&quot;IncludesReferencedQueries&quot;:false,&quot;RootFormulaText&quot;:&quot;let\n    #\&quot;UserName\&quot; = user_login,\n    #\&quot;Password\&quot; = user_password,\n    #\&quot;Header\&quot; = Binary.ToText(Text.ToBinary(#\&quot;UserName\&quot;\u0026\&quot;:\&quot; \u0026 #\&quot;Password\&quot;)),\n    #\&quot;BaseURL\&quot; = url_list_team_name_itop,\n    Source = Web.Page(Web.Contents(#\&quot;BaseURL\&quot;, [Headers=[Authorization=\&quot;Basic \&quot; \u0026 #\&quot;Header\&quot;]])),\n    Data0 = Source{0}[Data],\n    #\&quot;En-têtes promus\&quot; = Table.PromoteHeaders(Data0, [PromoteAllScalars=true]),\n    #\&quot;Type modifié\&quot; = Table.TransformColumnTypes(#\&quot;En-têtes promus\&quot;,{{\&quot;id (Primary Key)\&quot;, Int64.Type}, {\&quot;Name\&quot;, type text}})\nin\n    #\&quot;Type modifié\&quot;&quot;,&quot;ReferencedQueriesFormulaText&quot;:{}}" />
+        <Entry Type="IsLastAnalysisServicesFormulaTextCollection" Value="l1" />
+        <Entry Type="LoadToReportDisabled" Value="l0" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.1773596Z" />
+        <Entry Type="NavigationStepName" Value="sNavigation" />
+        <Entry Type="ResultType" Value="sTable" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TeamList/UserName</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TeamList/Password</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TeamList/Header</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TeamList/BaseURL</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TeamList/Source</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TeamList/Data0</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TeamList/En-t%C3%AAtes%20promus</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TeamList/Type%20modifi%C3%A9</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/Requ%C3%AAte1</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="LoadToReportDisabled" Value="l1" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.1783363Z" />
+        <Entry Type="ResultType" Value="sFunction" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/Calendrier_ResolutionDate</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="IsDirectQuery" Value="l0" />
+        <Entry Type="LastAnalysisServicesFormulaText" Value="s{&quot;IncludesReferencedQueries&quot;:false,&quot;RootFormulaText&quot;:&quot;let\n    Source = Requête1(#date(2021, 1, 1), #date(2024, 12, 31), null)\nin\n    Source&quot;,&quot;ReferencedQueriesFormulaText&quot;:{}}" />
+        <Entry Type="IsLastAnalysisServicesFormulaTextCollection" Value="l1" />
+        <Entry Type="LoadToReportDisabled" Value="l0" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.1783363Z" />
+        <Entry Type="ResultType" Value="sTable" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/Calendrier_ResolutionDate/Source</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/Calendrier</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="IsDirectQuery" Value="l0" />
+        <Entry Type="LastAnalysisServicesFormulaText" Value="s{&quot;IncludesReferencedQueries&quot;:false,&quot;RootFormulaText&quot;:&quot;let\n    Source = Requête1(#date(2021, 1, 1), #date(2024, 12, 31), null)\nin\n    Source&quot;,&quot;ReferencedQueriesFormulaText&quot;:{}}" />
+        <Entry Type="IsLastAnalysisServicesFormulaTextCollection" Value="l1" />
+        <Entry Type="LoadToReportDisabled" Value="l0" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.1793115Z" />
+        <Entry Type="ResultType" Value="sTable" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/Calendrier/Source</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/Mesures</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="LoadToReportDisabled" Value="l1" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.1793115Z" />
+        <Entry Type="ResultType" Value="sTable" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/Mesures/Source</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/Mesures/Type%20modifi%C3%A9</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/Mesures/Colonnes%20supprim%C3%A9es</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TableMesures</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="IsDirectQuery" Value="l0" />
+        <Entry Type="LastAnalysisServicesFormulaText" Value="s{&quot;IncludesReferencedQueries&quot;:false,&quot;RootFormulaText&quot;:&quot;let\n    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\&quot;i44FAA==\&quot;, BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#\&quot;Colonne 1\&quot; = _t]),\n    #\&quot;Type modifié\&quot; = Table.TransformColumnTypes(Source,{{\&quot;Colonne 1\&quot;, type text}}),\n    #\&quot;Colonnes supprimées\&quot; = Table.RemoveColumns(#\&quot;Type modifié\&quot;,{\&quot;Colonne 1\&quot;})\nin\n    #\&quot;Colonnes supprimées\&quot;&quot;,&quot;ReferencedQueriesFormulaText&quot;:{}}" />
+        <Entry Type="IsLastAnalysisServicesFormulaTextCollection" Value="l1" />
+        <Entry Type="LoadToReportDisabled" Value="l0" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.1802887Z" />
+        <Entry Type="NavigationStepName" Value="sNavigation" />
+        <Entry Type="ResultType" Value="sTable" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TableMesures/Source</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TableMesures/Type%20modifi%C3%A9</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/TableMesures/Colonnes%20supprim%C3%A9es</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/FirstTeam_Affected</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="IsDirectQuery" Value="l0" />
+        <Entry Type="LastAnalysisServicesFormulaText" Value="s{&quot;IncludesReferencedQueries&quot;:false,&quot;RootFormulaText&quot;:&quot;let\n    #\&quot;UserName\&quot;=user_login,\n    #\&quot;Password\&quot;=user_password,\n    #\&quot;Header\&quot; = Binary.ToText(Text.ToBinary(#\&quot;UserName\&quot;\u0026\&quot;:\&quot; \u0026 #\&quot;Password\&quot;)),\n    #\&quot;BaseURL\&quot; = url_list_first_team_dispatched_itop,\n    Source = Web.Page(Web.Contents(#\&quot;BaseURL\&quot;, [Headers=[Authorization=\&quot;Basic \&quot; \u0026 #\&quot;Header\&quot;]])),\n    Data0 = Source{0}[Data],\n    #\&quot;En-têtes promus\&quot; = Table.PromoteHeaders(Data0, [PromoteAllScalars=true]),\n    #\&quot;Type modifié\&quot; = Table.TransformColumnTypes(#\&quot;En-têtes promus\&quot;,{{\&quot;New value\&quot;, Int64.Type}, {\&quot;object id\&quot;, Int64.Type}}),\n    #\&quot;Colonnes renommées\&quot; = Table.RenameColumns(#\&quot;Type modifié\&quot;,{{\&quot;New value\&quot;, \&quot;FirstTeam_affected_id\&quot;}, {\&quot;object id\&quot;, \&quot;UserRequest_id\&quot;}}),\n    #\&quot;Userrequest unique\&quot; = Table.Distinct(#\&quot;Colonnes renommées\&quot;,\&quot;UserRequest_id\&quot;)\nin\n    #\&quot;Userrequest unique\&quot;&quot;,&quot;ReferencedQueriesFormulaText&quot;:{}}" />
+        <Entry Type="IsLastAnalysisServicesFormulaTextCollection" Value="l1" />
+        <Entry Type="LoadToReportDisabled" Value="l0" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.1802887Z" />
+        <Entry Type="ResultType" Value="sTable" />
+        <Entry Type="NavigationStepName" Value="sNavigation" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/FirstTeam_Affected/FirstTeam_Affected_Init</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/FirstTeam_Affected/FirstTeam_Affected</ItemPath>
+      </ItemLocation>
+      <StableEntries />
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/user_login</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="LoadToReportDisabled" Value="l1" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.1998076Z" />
+        <Entry Type="ResultType" Value="sText" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/user_password</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="LoadToReportDisabled" Value="l1" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.2037119Z" />
+        <Entry Type="ResultType" Value="sText" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/url_user_request_itop</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="LoadToReportDisabled" Value="l1" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.2066409Z" />
+        <Entry Type="ResultType" Value="sText" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/url_list_team_name_itop</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="LoadToReportDisabled" Value="l1" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.2095686Z" />
+        <Entry Type="ResultType" Value="sText" />
+      </StableEntries>
+    </Item>
+    <Item>
+      <ItemLocation>
+        <ItemType>Formula</ItemType>
+        <ItemPath>Section1/url_list_first_team_dispatched_itop</ItemPath>
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsHidden" Value="l0" />
+        <Entry Type="LoadToReportDisabled" Value="l1" />
+        <Entry Type="FillErrorCode" Value="sUnknown" />
+        <Entry Type="FillLastUpdated" Value="d2022-10-25T10:37:43.2193279Z" />
+        <Entry Type="NavigationStepName" Value="sNavigation" />
+        <Entry Type="ResultType" Value="sText" />
+      </StableEntries>
+    </Item>
+  </Items>
+</LocalPackageMetadataFile>

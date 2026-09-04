@@ -1,0 +1,39 @@
+name: Power BI baseline round trip
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - codex/locale-neutral-ingestion
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Validate pinned tooling
+        shell: pwsh
+        run: ./tests/PbiToolsWrapperTest.ps1
+
+      - name: Compile untouched template
+        shell: pwsh
+        run: |
+          ./scripts/pbi-tools.ps1 -Action Compile `
+            -Source 'src/CombodoPowerBI' `
+            -Destination 'artifacts/build/baseline-roundtrip.pbit'
+          if (-not (Test-Path -LiteralPath 'artifacts/build/baseline-roundtrip.pbit' -PathType Leaf)) {
+            throw 'Baseline PBIT was not created.'
+          }
+
+      - name: Upload baseline PBIT
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: baseline-roundtrip
+          path: artifacts/build/baseline-roundtrip.pbit
+          if-no-files-found: error
+          retention-days: 1

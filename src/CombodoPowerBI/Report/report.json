@@ -1,0 +1,53 @@
+{
+  "id": 0,
+  "layoutOptimization": 0,
+  "pods": [
+    {
+      "boundSection": "ReportSection7c1c6d15bb02163606bd",
+      "config": "{\"acceptsFilterContext\":1}",
+      "name": "Pod",
+      "referenceScope": 1
+    }
+  ],
+  "resourcePackages": [
+    {
+      "resourcePackage": {
+        "disabled": false,
+        "items": [
+          {
+            "name": "CY21SU11",
+            "path": "BaseThemes/CY21SU11.json",
+            "type": 202
+          }
+        ],
+        "name": "SharedResources",
+        "type": 2
+      }
+    },
+    {
+      "resourcePackage": {
+        "disabled": false,
+        "items": [
+          {
+            "name": "logo-itop8593079289067114.png",
+            "path": "logo-itop8593079289067114.png",
+            "type": 100
+          },
+          {
+            "name": "Solar_Combodo28300515392004355.json",
+            "path": "Solar_Combodo28300515392004355.json",
+            "type": 201
+          },
+          {
+            "name": "summary_powerbi_v2014814207082455289.png",
+            "path": "summary_powerbi_v2014814207082455289.png",
+            "type": 100
+          }
+        ],
+        "name": "RegisteredResources",
+        "type": 1
+      }
+    }
+  ],
+  "theme": "Solar_Combodo28300515392004355.json"
+}
