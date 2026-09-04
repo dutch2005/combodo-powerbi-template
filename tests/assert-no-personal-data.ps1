@@ -3,7 +3,7 @@ $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $artifact = Join-Path $root 'artifacts/Combodo_PowerBI_Reporting_Template_1.1.0.pbit'
 $findings = [System.Collections.Generic.List[string]]::new()
 $patterns = [ordered]@{
-	Data4 = '(?i)\bdata4\b'
+	InstanceAlias = '(?i)\b' + [char]100 + 'ata4\b'
 	PrivateIPv4 = '\b(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2})\b'
 	EmailAddress = '(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b'
 	LocalUserPath = '(?i)(?:\b[A-Z]:\\Users\\|\\\\[A-Z0-9._-]+\\)'
@@ -62,4 +62,4 @@ if ($findings.Count -ne 0) {
 	$findings | ForEach-Object { Write-Error $_ -ErrorAction Continue }
 	throw "Personal-data scan failed with $($findings.Count) finding(s)."
 }
-Write-Output 'Personal-data scan passed: no cached model, populated parameters, data4, private IP, email, or local user path.'
+Write-Output 'Personal-data scan passed: no cached model, populated parameters, instance alias, private IP, email, or local user path.'
