@@ -32,7 +32,13 @@ foreach ($locale in @('en-US','de-DE','nl-NL','fr-FR')) {
 		if (Test-Path -LiteralPath $fixture -PathType Leaf) {
 			$actual = Get-CsvHeader $fixture
 			Assert-Contract (($actual -join ',') -ceq ($expectedHeaders[$fileName] -join ',')) "$locale/$fileName does not use the internal-code header contract."
+			$rows = @(Import-Csv -LiteralPath $fixture)
+			Assert-Contract ($rows.Count -eq 1) "$locale/$fileName must contain one representative row."
 		}
+	}
+	$userRow = Import-Csv -LiteralPath (Join-Path $root "tests/fixtures/$locale/UserRequest.csv")
+	foreach ($field in @('operational_status','status','impact','urgency','priority','origin','request_type','sla_tto_passed','sla_ttr_passed')) {
+		Assert-Contract (-not [string]::IsNullOrWhiteSpace($userRow.$field)) "$locale/UserRequest.csv has a blank $field value."
 	}
 }
 
@@ -53,17 +59,35 @@ if (Test-Path -LiteralPath $schemaPath -PathType Leaf) {
 
 $mPath = Join-Path $root 'src/CombodoPowerBI/Mashup/Package/Formulas/Section1.m'
 $mSource = Get-Content -Raw -LiteralPath $mPath
+$modelQueryFiles = @(
+	Join-Path $root 'src/CombodoPowerBI/Model/expressions.tmdl'
+	Join-Path $root 'src/CombodoPowerBI/Model/tables/UserRequest.tmdl'
+	Join-Path $root 'src/CombodoPowerBI/Model/tables/UserRequest_Period.tmdl'
+	Join-Path $root 'src/CombodoPowerBI/Model/tables/TeamList.tmdl'
+	Join-Path $root 'src/CombodoPowerBI/Model/tables/FirstTeam_Affected.tmdl'
+)
+$modelQuerySource = ($modelQueryFiles | ForEach-Object { Get-Content -Raw -LiteralPath $_ }) -join "`n"
+$allQuerySource = $mSource + "`n" + $modelQuerySource
 foreach ($token in @('BuildExportUrl','FetchQueryCsv','RequireColumns','ShapeUserRequest','format','csv','no_localize','date_format','Y-m-d H:i:s','charset','UTF-8','Error.Record')) {
-	Assert-Contract ($mSource.Contains($token)) "Power Query source is missing $token."
+	Assert-Contract ($mSource.Contains($token) -and $modelQuerySource.Contains($token)) "Mashup and model query sources are not synchronized for $token."
 }
-Assert-Contract (-not $mSource.Contains('Web.Page')) 'Power Query must not parse locale-sensitive HTML tables with Web.Page.'
+Assert-Contract (-not $allQuerySource.Contains('Web.Page')) 'Power Query must not parse locale-sensitive HTML tables with Web.Page.'
+Assert-Contract (-not $allQuerySource.Contains('ManualStatusHandling')) 'Unsupported custom-connector status overrides must not be used.'
+Assert-Contract ($allQuerySource.Contains('Table.SelectColumns(data, required)')) 'Validated input must be projected to the exact required schema.'
+foreach ($partitionCall in @('ShapeUserRequest("UserRequest"','ShapeUserRequest("UserRequest_Period"','ShapeTeamList("TeamList"','ShapeFirstTeam("FirstTeam_Affected"')) {
+	Assert-Contract ($modelQuerySource.Contains($partitionCall)) "Model partition is missing $partitionCall."
+}
+$mashupMetadata = Get-Content -Raw -LiteralPath (Join-Path $root 'src/CombodoPowerBI/Mashup/metadata.xml')
+Assert-Contract (-not $mashupMetadata.Contains('Web.Page')) 'Mashup metadata contains stale locale-sensitive query analysis.'
 foreach ($legacyPattern in @('\{\{"Ref",\s*type text','\{\{"id \(Primary Key\)"','\{\{"New value"','\{\{"object id"')) {
-	Assert-Contract (-not [regex]::IsMatch($mSource, $legacyPattern)) "Power Query still treats a localized display header as source schema: $legacyPattern"
+	Assert-Contract (-not [regex]::IsMatch($allQuerySource, $legacyPattern)) "Power Query still treats a localized display header as source schema: $legacyPattern"
 }
 
-foreach ($errorFixture in @('login.html','invalid-query.html','missing-fields.csv','empty-user-request.csv','empty-team-list.csv')) {
+foreach ($errorFixture in @('login.html','invalid-query.html','missing-fields.csv','extra-fields.csv','empty-user-request.csv','empty-team-list.csv')) {
 	Assert-Contract (Test-Path -LiteralPath (Join-Path $root "tests/fixtures/errors/$errorFixture") -PathType Leaf) "Missing error fixture $errorFixture."
 }
+Assert-Contract (@(Import-Csv -LiteralPath (Join-Path $root 'tests/fixtures/errors/empty-user-request.csv')).Count -eq 0) 'Empty UserRequest fixture must be header-only.'
+Assert-Contract (@(Import-Csv -LiteralPath (Join-Path $root 'tests/fixtures/errors/empty-team-list.csv')).Count -eq 0) 'Empty TeamList fixture must be header-only.'
 $scanFiles = @(Get-Item -LiteralPath $mPath) + @(Get-ChildItem -LiteralPath (Join-Path $root 'tests/fixtures') -File -Recurse)
 foreach ($file in $scanFiles) {
 	$content = Get-Content -Raw -LiteralPath $file.FullName

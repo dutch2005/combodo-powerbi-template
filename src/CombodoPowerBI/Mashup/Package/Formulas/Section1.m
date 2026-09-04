@@ -18,8 +18,10 @@ shared FetchQueryCsv = (queryName as text, queryUrl as nullable text, login as n
     Secret = if password = null then "" else Text.From(password),
     Credentials = if User = "" or Text.Trim(Secret) = "" then error Error.Record("Configuration.Error", queryName & ": login or password is blank.", "Enter both iTop credentials in the template parameters.") else [User = User, Secret = Secret],
     Authorization = "Basic " & Binary.ToText(Text.ToBinary(Credentials[User] & ":" & Credentials[Secret], TextEncoding.Utf8), BinaryEncoding.Base64),
-    Response = Binary.Buffer(Web.Contents(BuildExportUrl(queryName, queryUrl), [Headers = [Authorization = Authorization, Accept = "text/csv"], ManualStatusHandling = {400, 401, 403, 404, 405, 408, 409, 410, 422, 429, 500, 502, 503, 504}])),
-    Metadata = Value.Metadata(Response),
+    RequestAttempt = try Web.Contents(BuildExportUrl(queryName, queryUrl), [Headers = [Authorization = Authorization, Accept = "text/csv"]]),
+    RawResponse = if RequestAttempt[HasError] then error Error.Record("DataSource.Error", queryName & ": the iTop request failed.", "Verify the Query Phrasebook URL, access rights, and credentials.") else RequestAttempt[Value],
+    Metadata = Value.Metadata(RawResponse),
+    Response = Binary.Buffer(RawResponse),
     Status = Number.From(Record.FieldOrDefault(Metadata, "Response.Status", 200)),
     Headers = Record.FieldOrDefault(Metadata, "Headers", []),
     ContentType = Text.Lower(Text.From(Record.FieldOrDefault(Headers, "Content-Type", Record.FieldOrDefault(Headers, "content-type", "")))),
@@ -34,7 +36,7 @@ in
 
 shared RequireColumns = (queryName as text, data as table, required as list) as table => let
     Missing = List.Difference(required, Table.ColumnNames(data), Comparer.Ordinal),
-    Checked = if List.IsEmpty(Missing) then data else error Error.Record("Schema.Error", queryName & ": required iTop fields are missing: " & Text.Combine(Missing, ", ") & ".", "Verify the Query Phrasebook URL, extension version, access rights, and credentials.")
+    Checked = if List.IsEmpty(Missing) then Table.SelectColumns(data, required) else error Error.Record("Schema.Error", queryName & ": required iTop fields are missing: " & Text.Combine(Missing, ", ") & ".", "Verify the Query Phrasebook URL, extension version, access rights, and credentials.")
 in
     Checked;
 
@@ -72,16 +74,28 @@ shared ShapeUserRequest = (queryName as text, data as table) as table => let
 in
     Table.ReorderColumns(Renamed, UserRequestOutputFields);
 
-shared UserRequest = ShapeUserRequest("UserRequest", FetchQueryCsv("UserRequest", url_user_request_itop, user_login, user_password));
-
-shared UserRequest_Period = ShapeUserRequest("UserRequest_Period", FetchQueryCsv("UserRequest_Period", url_user_request_itop, user_login, user_password));
-
-shared TeamList = let
-    Validated = RequireColumns("TeamList", FetchQueryCsv("TeamList", url_list_team_name_itop, user_login, user_password), {"id", "name"}),
+shared ShapeTeamList = (queryName as text, data as table) as table => let
+    Validated = RequireColumns(queryName, data, {"id", "name"}),
     Typed = Table.TransformColumns(Validated, {{"id", each Int64.From(_), Int64.Type}, {"name", each if _ = null then null else Text.From(_), type text}}),
     Renamed = Table.RenameColumns(Typed, {{"id", "id (Primary Key)"}, {"name", "Name"}})
 in
     Table.ReorderColumns(Renamed, {"id (Primary Key)", "Name"});
+
+shared ShapeFirstTeam = (queryName as text, data as table) as table => let
+    Validated = RequireColumns(queryName, data, {"newvalue", "objkey"}),
+    Typed = Table.TransformColumns(Validated, {{"newvalue", each Int64.From(_), Int64.Type}, {"objkey", each Int64.From(_), Int64.Type}}),
+    Renamed = Table.RenameColumns(Typed, {{"newvalue", "FirstTeam_affected_id"}, {"objkey", "UserRequest_id"}}),
+    Ordered = Table.ReorderColumns(Renamed, {"FirstTeam_affected_id", "UserRequest_id"})
+in
+    Table.Distinct(Ordered, {"UserRequest_id"});
+
+shared EmptyFirstTeam = () as table => #table(type table [FirstTeam_affected_id = Int64.Type, UserRequest_id = Int64.Type], {});
+
+shared UserRequest = ShapeUserRequest("UserRequest", FetchQueryCsv("UserRequest", url_user_request_itop, user_login, user_password));
+
+shared UserRequest_Period = ShapeUserRequest("UserRequest_Period", FetchQueryCsv("UserRequest_Period", url_user_request_itop, user_login, user_password));
+
+shared TeamList = ShapeTeamList("TeamList", FetchQueryCsv("TeamList", url_list_team_name_itop, user_login, user_password));
 
 shared Requête1 = (StartDate as date, EndDate as date, optional Culture as nullable text) as table =>
 
@@ -128,18 +142,7 @@ shared TableMesures = let
 in
     #"Colonnes supprimées";
 
-shared FirstTeam_Affected = let
-    OptionalUrl = if url_list_first_team_dispatched_itop = null then "" else Text.Trim(url_list_first_team_dispatched_itop),
-    Empty = #table(type table [FirstTeam_affected_id = Int64.Type, UserRequest_id = Int64.Type], {}),
-    Result = if OptionalUrl = "" then Empty else let
-        Validated = RequireColumns("FirstTeam_Affected", FetchQueryCsv("FirstTeam_Affected", OptionalUrl, user_login, user_password), {"newvalue", "objkey"}),
-        Typed = Table.TransformColumns(Validated, {{"newvalue", each Int64.From(_), Int64.Type}, {"objkey", each Int64.From(_), Int64.Type}}),
-        Renamed = Table.RenameColumns(Typed, {{"newvalue", "FirstTeam_affected_id"}, {"objkey", "UserRequest_id"}}),
-        Ordered = Table.ReorderColumns(Renamed, {"FirstTeam_affected_id", "UserRequest_id"})
-    in
-        Table.Distinct(Ordered, {"UserRequest_id"})
-in
-    Result;
+shared FirstTeam_Affected = let OptionalUrl = if url_list_first_team_dispatched_itop = null then "" else Text.Trim(url_list_first_team_dispatched_itop) in if OptionalUrl = "" then EmptyFirstTeam() else ShapeFirstTeam("FirstTeam_Affected", FetchQueryCsv("FirstTeam_Affected", OptionalUrl, user_login, user_password));
 
 [ Description = "iTop user login" ]
 shared user_login = null meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true];

@@ -13,23 +13,7 @@ $artifactName = 'Combodo_PowerBI_Reporting_Template_1.1.0.pbit'
 $artifact = Join-Path $root "artifacts/$artifactName"
 $checksumFile = Join-Path $root 'artifacts/SHA256SUMS.txt'
 $temporary = Join-Path $root '.cache/artifact-verify'
-
-function Get-TreeFingerprint([string]$TreeRoot, [string[]]$Paths)
-{
-	$files = foreach ($path in $Paths) {
-		$fullPath = Join-Path $TreeRoot $path
-		if (Test-Path -LiteralPath $fullPath -PathType Container) { Get-ChildItem -LiteralPath $fullPath -File -Recurse }
-		elseif (Test-Path -LiteralPath $fullPath -PathType Leaf) { Get-Item -LiteralPath $fullPath }
-	}
-	$lines = @($files | Sort-Object FullName | ForEach-Object {
-		$relative = $_.FullName.Substring($TreeRoot.Length + 1).Replace('\','/')
-		"$relative=$((Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash)"
-	})
-	$bytes = [System.Text.UTF8Encoding]::new($false).GetBytes(($lines -join "`n"))
-	$sha = [System.Security.Cryptography.SHA256]::Create()
-	try { return ([System.BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-','') }
-	finally { $sha.Dispose() }
-}
+. (Join-Path $root 'tests/TestHelpers.ps1')
 
 function Remove-VerifiedTemporaryDirectory
 {
@@ -71,16 +55,16 @@ try {
 	$groups = @(
 		@('Report','StaticResources','DiagramLayout.json','ReportMetadata.json','ReportSettings.json'),
 		@('Model'),
-		@('Mashup/Package/Config','Mashup/Package/Content','Mashup/Package/Resources','Mashup/Package.xml','Mashup/Permissions.json','Mashup/Metadata.json')
+		@('Mashup/Package/Config','Mashup/Package/Content','Mashup/Package/Resources','Mashup/Package.xml','Mashup/permissions.json','Mashup/metadata.xml')
 	)
 	foreach ($group in $groups) {
-		$sourceHash = Get-TreeFingerprint $project $group
-		$artifactHash = Get-TreeFingerprint $temporary $group
+		$sourceHash = (Get-TreeFingerprint $project $group).sha256
+		$artifactHash = (Get-TreeFingerprint $temporary $group).sha256
 		if ($sourceHash -cne $artifactHash) { throw "Artifact differs from source in: $($group -join ', ')" }
 	}
 	$sourceM = Join-Path $project 'Mashup/Package/Formulas/Section1.m'
 	$artifactM = Join-Path $temporary 'Mashup/Package/Formulas/Section1.m'
-	if ((Get-FileHash -Algorithm SHA256 -LiteralPath $sourceM).Hash -cne (Get-FileHash -Algorithm SHA256 -LiteralPath $artifactM).Hash) { throw 'Artifact Power Query expressions differ from source.' }
+	if ((Get-PortableFileHash $sourceM) -cne (Get-PortableFileHash $artifactM)) { throw 'Artifact Power Query expressions differ from source.' }
 	$pageCount = @(Get-ChildItem -LiteralPath (Join-Path $temporary 'Report/sections') -Directory).Count
 	$visualCount = @(Get-ChildItem -LiteralPath (Join-Path $temporary 'Report/sections') -Filter 'visualContainer.json' -File -Recurse).Count
 	if ($pageCount -ne 10 -or $visualCount -ne 76) { throw "Unexpected report layout: $pageCount pages and $visualCount visuals." }

@@ -2,39 +2,16 @@ $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $project = Join-Path $root 'src/CombodoPowerBI'
 $baseline = Get-Content -Raw -LiteralPath (Join-Path $root 'tests/model-baseline.json') | ConvertFrom-Json
-
-function Get-TreeFingerprint([string[]]$Paths)
-{
-	$files = foreach ($path in $Paths) {
-		$fullPath = Join-Path $project $path
-		if (Test-Path -LiteralPath $fullPath -PathType Container) {
-			Get-ChildItem -LiteralPath $fullPath -File -Recurse
-		} elseif (Test-Path -LiteralPath $fullPath -PathType Leaf) {
-			Get-Item -LiteralPath $fullPath
-		}
-	}
-	$lines = @($files | Sort-Object FullName | ForEach-Object {
-		$relative = $_.FullName.Substring($project.Length + 1).Replace('\','/')
-		"$relative=$((Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash)"
-	})
-	$bytes = [System.Text.UTF8Encoding]::new($false).GetBytes(($lines -join "`n"))
-	$sha = [System.Security.Cryptography.SHA256]::Create()
-	try {
-		return [pscustomobject]@{
-			count = $lines.Count
-			sha256 = ([System.BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-','')
-		}
-	} finally { $sha.Dispose() }
-}
+. (Join-Path $PSScriptRoot 'TestHelpers.ps1')
 
 $groups = @{
 	Report = @('Report','StaticResources','DiagramLayout.json','ReportMetadata.json','ReportSettings.json')
 	Model = @('Model')
-	MashupSupport = @('Mashup/Package/Config','Mashup/Package/Content','Mashup/Package/Resources','Mashup/Package.xml','Mashup/Permissions.json','Mashup/Metadata.json')
+	MashupSupport = @('Mashup/Package/Config','Mashup/Package/Content','Mashup/Package/Resources','Mashup/Package.xml','Mashup/permissions.json')
 }
 $errors = [System.Collections.Generic.List[string]]::new()
 foreach ($name in $groups.Keys) {
-	$actual = Get-TreeFingerprint $groups[$name]
+	$actual = if ($name -eq 'Model') { Get-ModelStructureFingerprint (Join-Path $project 'Model') } else { Get-TreeFingerprint $project $groups[$name] }
 	$expected = $baseline.$name
 	if ($actual.count -ne $expected.count -or $actual.sha256 -cne $expected.sha256) {
 		$errors.Add("$name changed outside the permitted Mashup expression and project metadata files.")

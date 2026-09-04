@@ -34,37 +34,7 @@
 
 	partition FirstTeam_Affected-4d42f3e3-ee3b-4a2a-9467-39eb268d3b55 = m
 		mode: import
-		source = ```
-				let
-				    FirstTeam_Affected_Init = if url_list_first_team_dispatched_itop <> null
-				    then { let    
-				    #"UserName"=user_login,
-				    #"Password"=user_password,
-				    #"Header" = Binary.ToText(Text.ToBinary(#"UserName"&":" & #"Password")),
-				    #"BaseURL" = url_list_first_team_dispatched_itop, 
-				    Source = Web.Page(Web.Contents(#"BaseURL", [Headers=[Authorization="Basic " & #"Header"]])),
-				    Data0 = Source{0}[Data],
-				    #"En-têtes promus" = Table.PromoteHeaders(Data0, [PromoteAllScalars=true]),
-				    #"Type modifié" = Table.TransformColumnTypes(#"En-têtes promus",{{"New value", Int64.Type}, {"object id", Int64.Type}}),
-				    #"Colonnes renommées" = Table.RenameColumns(#"Type modifié",{{"New value", "FirstTeam_affected_id"}, {"object id", "UserRequest_id"}}),
-				    #"Userrequest unique" = Table.Distinct(#"Colonnes renommées","UserRequest_id")
-				    in
-				    #"Userrequest unique"
-				    }
-				    else { let
-				    Source = #table(  
-				    type table [UserRequest_id = Int64.Type, FirstTeam_affected_id = Int64.Type],   
-				        {   
-				              {1, 1}
-				        }  
-				    )  
-				    in
-				    Source
-				    },
-				    FirstTeam_Affected = FirstTeam_Affected_Init{0}
-				in
-				    FirstTeam_Affected
-				```
+		source = if url_list_first_team_dispatched_itop = null or Text.Trim(url_list_first_team_dispatched_itop) = "" then EmptyFirstTeam() else ShapeFirstTeam("FirstTeam_Affected", FetchQueryCsv("FirstTeam_Affected", url_list_first_team_dispatched_itop, user_login, user_password))
 
 	annotation PBI_DescriptionAtRefresh
 

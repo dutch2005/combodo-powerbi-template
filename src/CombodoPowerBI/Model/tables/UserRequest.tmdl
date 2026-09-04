@@ -667,21 +667,7 @@
 
 	partition UserRequest-f0906ee1-7967-4349-bb05-266ce5be058d = m
 		mode: import
-		source =
-				let
-				    #"UserName"=user_login,
-				    #"Password"=user_password,
-				    #"Header" = Binary.ToText(Text.ToBinary(#"UserName"&":" & #"Password")),
-				    #"BaseURL" = url_user_request_itop,
-				    Source = Web.Page(Web.Contents(#"BaseURL", [Headers=[Authorization="Basic " & #"Header"]])),
-				    Data0 = Source{0}[Data],
-				    #"En-têtes promus" = Table.PromoteHeaders(Data0, [PromoteAllScalars=true]),
-				     #"Type modifié" = Table.TransformColumnTypes(#"En-têtes promus",{{"Ref", type text}}),
-				     #"Type modifié1" = Table.TransformColumnTypes(#"Type modifié",{{"Resolution date (date)", type date}, {"Assignment date (date)", type date}, {"Start date (date)", type date}, {"Start date (time)", type time}, {"End date (date)", type date}, {"End date (time)", type time}, {"Last update (date)", type date}, {"Last update (time)", type time}, {"Assignment date (time)", type time}, {"Resolution date (time)", type time}, {"Last pending date (date)", type date}, {"Last pending date (time)", type time}, {"TTO Deadline", type datetime}, {"TTR Deadline", type datetime}, {"Resolution delay", Int64.Type}}),
-				    #"Colonnes renommées" = Table.RenameColumns(#"Type modifié1",{{"Team_1", "Team_Name"}}),
-				    #"Valeur remplacée" = Table.ReplaceValue(#"Colonnes renommées",null,0,Replacer.ReplaceValue,{"Resolution delay"})
-				in
-				    #"Valeur remplacée"
+		source = ShapeUserRequest("UserRequest", FetchQueryCsv("UserRequest", url_user_request_itop, user_login, user_password))
 
 	annotation PBI_DescriptionAtRefresh
 

@@ -33,18 +33,7 @@
 
 	partition TeamList-4d4ab014-068a-460d-b3e9-c4f1b6a0335b = m
 		mode: import
-		source =
-				let
-				    #"UserName" = user_login,
-				    #"Password" = user_password,
-				    #"Header" = Binary.ToText(Text.ToBinary(#"UserName"&":" & #"Password")),
-				    #"BaseURL" = url_list_team_name_itop,
-				    Source = Web.Page(Web.Contents(#"BaseURL", [Headers=[Authorization="Basic " & #"Header"]])),
-				    Data0 = Source{0}[Data],
-				    #"En-têtes promus" = Table.PromoteHeaders(Data0, [PromoteAllScalars=true]),
-				    #"Type modifié" = Table.TransformColumnTypes(#"En-têtes promus",{{"id (Primary Key)", Int64.Type}, {"Name", type text}})
-				in
-				    #"Type modifié"
+		source = ShapeTeamList("TeamList", FetchQueryCsv("TeamList", url_list_team_name_itop, user_login, user_password))
 
 	annotation PBI_DescriptionAtRefresh
 
