@@ -9,7 +9,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $project = Join-Path $root 'src/CombodoPowerBI'
-$artifactName = 'Combodo_PowerBI_Reporting_Template_1.1.0.pbit'
+$artifactName = 'Combodo_PowerBI_Reporting_Template_1.1.1.pbit'
 $artifact = Join-Path $root "artifacts/$artifactName"
 $checksumFile = Join-Path $root 'artifacts/SHA256SUMS.txt'
 $temporaryRoot = Join-Path $root '.cache/artifact-verify'

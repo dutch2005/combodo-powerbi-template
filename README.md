@@ -1,21 +1,21 @@
 # Reporting template for Power BI - Helpdesk view
 
-This repository contains the source and release template for the iTop Helpdesk Power BI report. Version 1.1.0 keeps the existing English report pages and model while making data refresh independent of the iTop user's display language.
+This repository contains the source and release template for the iTop Helpdesk Power BI report. Version 1.1.1 keeps the existing English report pages and model while making data refresh independent of the iTop user's display language.
 
-## Install version 1.1.0
+## Install version 1.1.1
 
 1. Install **Reporting for PowerBI - Helpdesk view 1.1.1** in iTop first.
 2. In iTop, open the Query Phrasebook and copy either the QueryOQL details URLs or the `export-v2.php` URLs for:
    - PowerBI - Integration - User Requests updated over the last 12 months
    - PowerBI - Integration - List teams' name - Combodo
    - PowerBI - Integration - List the first teams dispatched on Tickets updated over the last 12 months - Combodo (optional)
-3. Open `artifacts/Combodo_PowerBI_Reporting_Template_1.1.0.pbit` in Power BI Desktop.
+3. Open `artifacts/Combodo_PowerBI_Reporting_Template_1.1.1.pbit` in Power BI Desktop.
 4. Enter the three URLs plus the iTop login and password when prompted.
 5. When Power BI asks for web data-source credentials, select **Anonymous**. The template supplies the Basic authorization header itself.
 
 For a details URL such as `/pages/UI.php?operation=details&class=QueryOQL&id=26`, the template automatically calls `/webservices/export-v2.php?...&query=26`. Existing export URLs remain supported. Both calendar tables extend from 2021 through the end of the current year at each refresh.
 
-Treat 1.1.0 as a replacement template rather than an in-place conversion of a customized 1.0.x report. Reapply any private report customizations to a copy of 1.1.0.
+Treat 1.1.1 as a replacement template rather than an in-place conversion of a customized 1.0.x report. Reapply any private report customizations to a copy of 1.1.1.
 
 ## Language behavior
 
@@ -65,7 +65,7 @@ After obtaining the locked pbi-tools Desktop executable, Mono.Cecil 0.11.5, and 
 ```powershell
 ./scripts/pbi-tools-desktop.ps1 -Action Compile `
   -Source 'src/CombodoPowerBI' `
-  -Destination 'artifacts/Combodo_PowerBI_Reporting_Template_1.1.0.pbit' `
+  -Destination 'artifacts/Combodo_PowerBI_Reporting_Template_1.1.1.pbit' `
   -PbiInstallDir '<Power BI Desktop bin>' `
   -PbiToolsExe '<pbi-tools 1.2.0 Desktop exe>' `
   -MonoCecilDll '<Mono.Cecil 0.11.5 dll>'

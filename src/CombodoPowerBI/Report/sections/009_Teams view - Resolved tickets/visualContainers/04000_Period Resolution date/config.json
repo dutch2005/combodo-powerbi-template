@@ -113,53 +113,6 @@
           }
         }
       ],
-      "general": [
-        {
-          "properties": {
-            "filter": {
-              "filter": {
-                "Version": 2,
-                "From": [
-                  {
-                    "Name": "c",
-                    "Entity": "Calendrier_ResolutionDate",
-                    "Type": 0
-                  }
-                ],
-                "Where": [
-                  {
-                    "Condition": {
-                      "In": {
-                        "Expressions": [
-                          {
-                            "Column": {
-                              "Expression": {
-                                "SourceRef": {
-                                  "Source": "c"
-                                }
-                              },
-                              "Property": "Year"
-                            }
-                          }
-                        ],
-                        "Values": [
-                          [
-                            {
-                              "Literal": {
-                                "Value": "'2022'"
-                              }
-                            }
-                          ]
-                        ]
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        }
-      ],
       "header": [
         {
           "properties": {
@@ -336,33 +289,6 @@
           }
         }
       ]
-    },
-    "cachedFilterDisplayItems": [
-      {
-        "id": {
-          "scopeId": {
-            "Comparison": {
-              "ComparisonKind": 0,
-              "Left": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Calendrier_ResolutionDate"
-                    }
-                  },
-                  "Property": "Year"
-                }
-              },
-              "Right": {
-                "Literal": {
-                  "Value": "'2022'"
-                }
-              }
-            }
-          }
-        },
-        "displayName": "2022"
-      }
-    ]
+    }
   }
 }

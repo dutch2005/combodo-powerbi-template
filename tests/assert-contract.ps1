@@ -96,6 +96,19 @@ $calendarSources = @(
 Assert-Contract (-not ($mSource + $calendarSources).Contains('#date(2024, 12, 31)')) 'Calendar tables still expire at the end of 2024.'
 Assert-Contract (([regex]::Matches($mSource + $calendarSources, 'Date\.EndOfYear\(Date\.From\(DateTime\.FixedLocalNow\(\)\)\)')).Count -eq 4) 'Both Mashup and model calendars must end dynamically at the current year.'
 
+$measureSource = Get-Content -Raw -LiteralPath (Join-Path $root 'src/CombodoPowerBI/Model/tables/TableMesures.tmdl')
+Assert-Contract ($measureSource.Contains('(YEAR([Start date (date)]))=year')) 'Count UR Create Team An must compare the four-digit start year to YearKey.'
+Assert-Contract (-not $measureSource.Contains('(YEAR([Start date (date)])*100)=year')) 'Count UR Create Team An still multiplies the year by 100.'
+
+$yearSlicerPaths = @(
+	'src/CombodoPowerBI/Report/sections/002_Capacity management tickets/visualContainers/03000_Filter on Year/config.json',
+	'src/CombodoPowerBI/Report/sections/009_Teams view - Resolved tickets/visualContainers/04000_Period Resolution date/config.json'
+)
+foreach ($relativePath in $yearSlicerPaths) {
+	$slicerSource = Get-Content -Raw -LiteralPath (Join-Path $root $relativePath)
+	Assert-Contract (-not $slicerSource.Contains("'2022'")) "$relativePath retains a stale 2022 selection."
+}
+
 foreach ($errorFixture in @('login.html','invalid-query.html','missing-fields.csv','extra-fields.csv','empty-user-request.csv','empty-team-list.csv')) {
 	Assert-Contract (Test-Path -LiteralPath (Join-Path $root "tests/fixtures/errors/$errorFixture") -PathType Leaf) "Missing error fixture $errorFixture."
 }

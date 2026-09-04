@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.1 - 2026-09-05
+
+- Restored the correct yearly team measure comparison from the original calendar-fix work.
+- Removed the two stale 2022 slicer filters and the cached 2022 resolution-year selection.
+- Added direct regression checks for the DAX expression and both affected slicers.
+- Coordinates with `combodo-powerbi-integration` extension 1.1.1.
+
 ## 1.1.0 - 2026-09-04
 
 - Replaced locale-sensitive HTML table parsing with UTF-8 CSV ingestion using stable iTop internal field codes.
