@@ -41,13 +41,13 @@ Run the static locale and preservation gates:
 ./tests/assert-model-parity.ps1
 ```
 
-Run full artifact verification with Docker. The wrapper uses the digest-pinned pbi-tools Core 1.2.0 image and re-extracts the committed PBIT to prove that its Mashup, model, pages, and 76 visuals match source:
+Run portable archive verification. It checks the committed checksum and required PBIT entries, including a non-empty `DataMashup`:
 
 ```powershell
-./scripts/verify-artifact.ps1
+./scripts/verify-artifact.ps1 -Extractor Archive
 ```
 
-The Core image can verify/extract this artifact, but it cannot safely create it because Core compilation omits `DataMashup` ([pbi-tools issue #16](https://github.com/pbi-tools/pbi-tools/issues/16)). Release builds therefore use the locked Desktop edition and Power BI Desktop 2.157.1354.0. pbi-tools 1.2.0 calls an older packaging overload, so the build wrapper applies a reviewed one-call compatibility patch ([pbi-tools issue #434](https://github.com/pbi-tools/pbi-tools/issues/434)) and verifies every binary hash before use.
+CI also boots the digest-pinned pbi-tools Core 1.2.0 image, but Core cannot extract this current Desktop artifact and Core compilation omits `DataMashup` ([pbi-tools issue #16](https://github.com/pbi-tools/pbi-tools/issues/16)). Full source-to-artifact extraction and release builds therefore use the locked Desktop edition and Power BI Desktop 2.157.1354.0. pbi-tools 1.2.0 calls an older packaging overload, so the build wrapper applies a reviewed one-call compatibility patch ([pbi-tools issue #434](https://github.com/pbi-tools/pbi-tools/issues/434)) and verifies every binary hash before use.
 
 After obtaining the locked pbi-tools Desktop executable, Mono.Cecil 0.11.5, and the matching Power BI Desktop `bin` directory, build with:
 
@@ -60,10 +60,12 @@ After obtaining the locked pbi-tools Desktop executable, Mono.Cecil 0.11.5, and 
   -MonoCecilDll '<Mono.Cecil 0.11.5 dll>'
 ```
 
+Use the same three paths with `./scripts/verify-artifact.ps1 -Extractor Desktop` to re-extract the built PBIT and verify its Mashup, model, 10 pages, and 76 visuals against source.
+
 `tools/pbi-tools.lock.json` records the reviewed versions and SHA-256 values. `artifacts/SHA256SUMS.txt` records the release artifact hash.
 
 ## Verification boundary
 
-Automated checks statically validate the EN/DE/NL/FR fixture shapes, fixed internal headers and dates, presence of sanitized negative fixtures, source/model parity, binary Mashup parity, page count, visual count, and artifact checksum. They do not execute those fixtures in the Power Query engine. A live refresh against a reachable iTop instance has not been performed in this repository environment; do not interpret the checks as proof of runtime transformations, production credentials, connectivity, or instance permissions.
+Automated CI checks statically validate the EN/DE/NL/FR fixture shapes, fixed internal headers and dates, presence of sanitized negative fixtures, source/model parity, archive structure, and artifact checksum. Locked Desktop verification additionally checks binary Mashup parity, page count, and visual count. Neither path executes the fixtures in the Power Query engine. A live refresh against a reachable iTop instance has not been performed in this repository environment; do not interpret the checks as proof of runtime transformations, production credentials, connectivity, or instance permissions.
 
 The Query Phrasebook extension is maintained at [dutch2005/combodo-powerbi-integration](https://github.com/dutch2005/combodo-powerbi-integration).

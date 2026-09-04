@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-	[ValidateSet('Docker','Desktop')][string]$Extractor = 'Docker',
+	[ValidateSet('Archive','Desktop')][string]$Extractor = 'Archive',
 	[string]$PbiInstallDir,
 	[string]$PbiToolsExe,
 	[string]$MonoCecilDll
@@ -52,19 +52,19 @@ try {
 	if ($dataMashup.Length -le 0) { throw 'PBIT contains an empty DataMashup.' }
 } finally { $archive.Dispose() }
 
+if ($Extractor -eq 'Archive') {
+	Write-Output "Artifact archive verified: $actualHash (required entries and DataMashup present)."
+	return
+}
+
 Assert-NoReparsePoint $temporaryRoot
 [System.IO.Directory]::CreateDirectory($temporaryRoot) | Out-Null
 try {
-	if ($Extractor -eq 'Docker') {
-		$relativeTemporary = $temporary.Substring($root.Length + 1).Replace('\','/')
-		& (Join-Path $root 'scripts/pbi-tools.ps1') -Action Extract -Source "artifacts/$artifactName" -Destination $relativeTemporary
-	} else {
-		foreach ($value in @($PbiInstallDir,$PbiToolsExe,$MonoCecilDll)) {
-			if ([string]::IsNullOrWhiteSpace($value)) { throw 'Desktop extraction requires PbiInstallDir, PbiToolsExe, and MonoCecilDll.' }
-		}
-		$relativeTemporary = $temporary.Substring($root.Length + 1).Replace('\','/')
-		& (Join-Path $root 'scripts/pbi-tools-desktop.ps1') -Action Extract -Source "artifacts/$artifactName" -Destination $relativeTemporary -PbiInstallDir $PbiInstallDir -PbiToolsExe $PbiToolsExe -MonoCecilDll $MonoCecilDll
+	foreach ($value in @($PbiInstallDir,$PbiToolsExe,$MonoCecilDll)) {
+		if ([string]::IsNullOrWhiteSpace($value)) { throw 'Desktop extraction requires PbiInstallDir, PbiToolsExe, and MonoCecilDll.' }
 	}
+	$relativeTemporary = $temporary.Substring($root.Length + 1).Replace('\','/')
+	& (Join-Path $root 'scripts/pbi-tools-desktop.ps1') -Action Extract -Source "artifacts/$artifactName" -Destination $relativeTemporary -PbiInstallDir $PbiInstallDir -PbiToolsExe $PbiToolsExe -MonoCecilDll $MonoCecilDll
 	$groups = @(
 		@('Report','StaticResources','DiagramLayout.json','ReportMetadata.json','ReportSettings.json'),
 		@('Model'),

@@ -26,9 +26,9 @@ jobs:
           ./tests/assert-contract.ps1
           ./tests/assert-model-parity.ps1
 
-      - name: Verify release artifact with pinned container
+      - name: Verify release artifact archive
         shell: pwsh
-        run: ./scripts/verify-artifact.ps1
+        run: ./scripts/verify-artifact.ps1 -Extractor Archive
 
       - name: Upload verified template
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
