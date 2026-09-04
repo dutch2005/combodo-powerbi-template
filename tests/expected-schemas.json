@@ -1,0 +1,44 @@
+{
+  "schemaSets": {
+    "userRequest": {
+      "names": [
+        "id (Primary Key)", "Operational status", "Status", "Ref", "Organization", "Organization Name",
+        "Caller", "Caller Name", "Team", "Team_Name", "Agent", "Agent Name", "Impact", "Urgency",
+        "Priority", "Origin", "Request Type", "Start date (date)", "Start date (time)", "End date (date)",
+        "End date (time)", "Last update (date)", "Last update (time)", "Assignment date (date)",
+        "Assignment date (time)", "Resolution date (date)", "Resolution date (time)", "Last pending date (date)",
+        "Last pending date (time)", "SLA tto passed", "SLA ttr passed", "Resolution delay", "Resolution code",
+        "TTO Deadline", "TTR Deadline", "Service name"
+      ],
+      "mTypes": [
+        "type text", "type text", "type text", "type text", "type text", "type text", "type text", "type text",
+        "type text", "type text", "type text", "type text", "type text", "type text", "type text", "type text",
+        "type text", "type date", "type time", "type date", "type time", "type date", "type time", "type date",
+        "type time", "type date", "type time", "type date", "type time", "type text", "type text", "Int64.Type",
+        "type text", "type datetime", "type datetime", "type text"
+      ],
+      "modelTypes": [
+        "string", "string", "string", "string", "string", "string", "string", "string", "string", "string",
+        "string", "string", "string", "string", "string", "string", "string", "dateTime", "dateTime", "dateTime",
+        "dateTime", "dateTime", "dateTime", "dateTime", "dateTime", "dateTime", "dateTime", "dateTime", "dateTime",
+        "string", "string", "double", "string", "dateTime", "dateTime", "string"
+      ]
+    },
+    "teamList": {
+      "names": ["id (Primary Key)", "Name"],
+      "mTypes": ["Int64.Type", "type text"],
+      "modelTypes": ["int64", "string"]
+    },
+    "firstTeam": {
+      "names": ["FirstTeam_affected_id", "UserRequest_id"],
+      "mTypes": ["Int64.Type", "Int64.Type"],
+      "modelTypes": ["int64", "int64"]
+    }
+  },
+  "tables": {
+    "UserRequest": "userRequest",
+    "UserRequest_Period": "userRequest",
+    "TeamList": "teamList",
+    "FirstTeam_Affected": "firstTeam"
+  }
+}

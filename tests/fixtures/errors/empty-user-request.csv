@@ -1,0 +1,1 @@
+id,operational_status,status,ref,org_id,org_name,caller_id,caller_name,team_id,team_id_friendlyname,agent_id,agent_name,impact,urgency,priority,origin,request_type,start_date,end_date,last_update,assignment_date,resolution_date,last_pending_date,sla_tto_passed,sla_ttr_passed,time_spent,resolution_code,tto_escalation_deadline,ttr_escalation_deadline,service_name
