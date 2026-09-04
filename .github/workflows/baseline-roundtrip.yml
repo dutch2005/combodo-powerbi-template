@@ -21,6 +21,7 @@ jobs:
         run: ./tests/PbiToolsWrapperTest.ps1
 
       - name: Compile untouched template
+        timeout-minutes: 5
         shell: pwsh
         run: |
           ./scripts/pbi-tools.ps1 -Action Compile `

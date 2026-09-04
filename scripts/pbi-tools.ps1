@@ -94,7 +94,8 @@ switch ($Action) {
 	}
 }
 
-& docker @taskDockerArguments @taskToolArguments
+$taskDockerArguments += $taskToolArguments
+& docker @taskDockerArguments
 if ($LASTEXITCODE -ne 0) {
 	throw "pbi-tools $Action failed with exit code $LASTEXITCODE."
 }
