@@ -17,6 +17,8 @@ For a details URL such as `/pages/UI.php?operation=details&class=QueryOQL&id=26`
 
 Treat 1.1.1 as a replacement template rather than an in-place conversion of a customized 1.0.x report. Reapply any private report customizations to a copy of 1.1.1.
 
+For compatibility with the repository's longstanding download location, the root `Combodo_PowerBI_Reporting_Template_V1.07_2210025.pbit` is byte-identical to the canonical 1.1.1 artifact. The original 1.0.x PBIT remains under `artifacts/legacy/` for rollback.
+
 ## Language behavior
 
 The template requests UTF-8 CSV with `no_localize=1` and a fixed date format. It selects stable iTop field codes such as `ref`, `id`, `newvalue`, and `objkey`, then maps them back to the unchanged report model.

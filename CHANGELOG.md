@@ -5,6 +5,8 @@
 - Restored the correct yearly team measure comparison from the original calendar-fix work.
 - Removed the two stale 2022 slicer filters and the cached 2022 resolution-year selection.
 - Added direct regression checks for the DAX expression and both affected slicers.
+- Made the longstanding root PBIT byte-identical to canonical 1.1.1 and removed the superseded defective 1.1.0 binary.
+- Extended portable artifact verification to inspect the embedded measure and slicer state.
 - Coordinates with `combodo-powerbi-integration` extension 1.1.1.
 
 ## 1.1.0 - 2026-09-04
