@@ -37,7 +37,7 @@ function ConvertTo-ContainerPath
 {
 	param([Parameter(Mandatory)][string]$HostPath)
 	$taskRelativePath = $HostPath.Substring($taskRoot.Length).TrimStart('\', '/')
-	return '/repo/' + $taskRelativePath.Replace('\', '/')
+	return './' + $taskRelativePath.Replace('\', '/')
 }
 
 $taskDockerArguments = @(
@@ -45,6 +45,8 @@ $taskDockerArguments = @(
 	'--rm',
 	'--mount',
 	"type=bind,source=$taskRoot,target=/repo",
+	'--workdir',
+	'/repo',
 	'--entrypoint',
 	'/app/pbi-tools/pbi-tools.core',
 	[string]$taskLock.image
