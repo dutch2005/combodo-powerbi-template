@@ -1,0 +1,41 @@
+name: Power BI template contract
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Validate pinned tooling
+        shell: pwsh
+        run: ./tests/PbiToolsWrapperTest.ps1
+
+      - name: Validate locale and model contracts
+        shell: pwsh
+        run: |
+          ./tests/assert-contract.ps1
+          ./tests/assert-model-parity.ps1
+
+      - name: Verify release artifact with pinned container
+        shell: pwsh
+        run: ./scripts/verify-artifact.ps1
+
+      - name: Upload verified template
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Combodo-PowerBI-Template-1.1.0
+          path: |
+            artifacts/Combodo_PowerBI_Reporting_Template_1.1.0.pbit
+            artifacts/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 7
