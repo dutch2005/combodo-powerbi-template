@@ -41,7 +41,7 @@ Run the static locale and preservation gates:
 ./tests/assert-model-parity.ps1
 ```
 
-Run portable archive verification. It checks the committed checksum and required PBIT entries, including a non-empty `DataMashup`:
+Run portable archive verification. It checks unique non-empty PBIT entries, the committed checksum, embedded Mashup and model expressions against source, and the 10-page/76-visual report layout:
 
 ```powershell
 ./scripts/verify-artifact.ps1 -Extractor Archive
@@ -66,6 +66,6 @@ Use the same three paths with `./scripts/verify-artifact.ps1 -Extractor Desktop`
 
 ## Verification boundary
 
-Automated CI checks statically validate the EN/DE/NL/FR fixture shapes, fixed internal headers and dates, presence of sanitized negative fixtures, source/model parity, archive structure, and artifact checksum. Locked Desktop verification additionally checks binary Mashup parity, page count, and visual count. Neither path executes the fixtures in the Power Query engine. A live refresh against a reachable iTop instance has not been performed in this repository environment; do not interpret the checks as proof of runtime transformations, production credentials, connectivity, or instance permissions.
+Automated CI checks statically validate the EN/DE/NL/FR fixture shapes, fixed internal headers and dates, presence of sanitized negative fixtures, source/model parity, archive structure, embedded Mashup/model parity, page count, visual count, and artifact checksum. Locked Desktop verification additionally re-extracts and compares the full report, model, and Mashup trees. Neither path executes the fixtures in the Power Query engine. A live refresh against a reachable iTop instance has not been performed in this repository environment; do not interpret the checks as proof of runtime transformations, production credentials, connectivity, or instance permissions.
 
 The Query Phrasebook extension is maintained at [dutch2005/combodo-powerbi-integration](https://github.com/dutch2005/combodo-powerbi-integration).

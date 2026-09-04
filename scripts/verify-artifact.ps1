@@ -16,6 +16,31 @@ $temporaryRoot = Join-Path $root '.cache/artifact-verify'
 $temporary = Join-Path $temporaryRoot ([guid]::NewGuid().ToString('N'))
 . (Join-Path $root 'tests/TestHelpers.ps1')
 
+function Get-RequiredArchiveEntry($Archive, [string]$Name)
+{
+	$matches = @($Archive.Entries | Where-Object FullName -ceq $Name)
+	if ($matches.Count -ne 1) { throw "PBIT must contain exactly one non-empty $Name entry." }
+	if ($matches[0].Length -le 0) { throw "PBIT must contain exactly one non-empty $Name entry." }
+	return $matches[0]
+}
+
+function Read-ArchiveText($Entry, [System.Text.Encoding]$Encoding)
+{
+	$reader = [System.IO.StreamReader]::new($Entry.Open(), $Encoding, $true)
+	try { return $reader.ReadToEnd() } finally { $reader.Dispose() }
+}
+
+function Normalize-PortableText([string]$Text)
+{
+	return $Text.TrimStart([char]0xFEFF).Replace("`r`n", "`n").Replace("`r", "`n").TrimEnd([char]13, [char]10) + "`n"
+}
+
+function Normalize-Expression($Expression)
+{
+	$lines = if ($Expression -is [System.Array]) { @($Expression) } else { @(([string]$Expression) -split "`r?`n") }
+	return (($lines | ForEach-Object { $_.TrimStart() }) -join "`n").Trim()
+}
+
 function Assert-NoReparsePoint([string]$Path)
 {
 	$current = [System.IO.DirectoryInfo]::new([System.IO.Path]::GetFullPath($Path))
@@ -44,16 +69,56 @@ if ($actualHash -cne $expectedHash) { throw "Artifact checksum mismatch: expecte
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $archive = [System.IO.Compression.ZipFile]::OpenRead($artifact)
 try {
-	$entries = @($archive.Entries | ForEach-Object FullName)
-	foreach ($required in @('DataMashup','DataModelSchema','Report/Layout','Version')) {
-		if ($entries -cnotcontains $required) { throw "PBIT is missing required entry: $required" }
+	$dataMashup = Get-RequiredArchiveEntry $archive 'DataMashup'
+	$dataModelEntry = Get-RequiredArchiveEntry $archive 'DataModelSchema'
+	$layoutEntry = Get-RequiredArchiveEntry $archive 'Report/Layout'
+	[void](Get-RequiredArchiveEntry $archive 'Version')
+
+	$mashupStream = $dataMashup.Open()
+	$mashupMemory = [System.IO.MemoryStream]::new()
+	try { $mashupStream.CopyTo($mashupMemory) } finally { $mashupStream.Dispose() }
+	$mashupBytes = $mashupMemory.ToArray()
+	$mashupMemory.Dispose()
+	if ($mashupBytes.Length -lt 8) { throw 'DataMashup header is truncated.' }
+	$packageLength = [System.BitConverter]::ToInt32($mashupBytes, 4)
+	if ($packageLength -le 0 -or 8 + $packageLength -gt $mashupBytes.Length) { throw 'DataMashup package length is invalid.' }
+	$packageStream = [System.IO.MemoryStream]::new($mashupBytes, 8, $packageLength, $false)
+	$package = [System.IO.Compression.ZipArchive]::new($packageStream, [System.IO.Compression.ZipArchiveMode]::Read, $false)
+	try {
+		$formulaEntry = Get-RequiredArchiveEntry $package 'Formulas/Section1.m'
+		$artifactFormula = Read-ArchiveText $formulaEntry ([System.Text.UTF8Encoding]::new($false))
+	} finally {
+		$package.Dispose()
+		$packageStream.Dispose()
 	}
-	$dataMashup = $archive.Entries | Where-Object FullName -ceq 'DataMashup'
-	if ($dataMashup.Length -le 0) { throw 'PBIT contains an empty DataMashup.' }
+	$sourceFormula = [System.IO.File]::ReadAllText((Join-Path $project 'Mashup/Package/Formulas/Section1.m'))
+	if ((Normalize-PortableText $artifactFormula) -cne (Normalize-PortableText $sourceFormula)) { throw 'PBIT DataMashup formula differs from source.' }
+
+	$model = (Read-ArchiveText $dataModelEntry ([System.Text.Encoding]::Unicode)) | ConvertFrom-Json
+	$expressionSource = [System.IO.File]::ReadAllText((Join-Path $project 'Model/expressions.tmdl'))
+	$expressionNames = @('BuildExportUrl','FetchQueryCsv','RequireColumns','ParseITopDateTime','UserRequestFields','UserRequestOutputFields','ShapeUserRequest','ShapeTeamList','ShapeFirstTeam','EmptyFirstTeam')
+	foreach ($name in $expressionNames) {
+		$artifactExpressions = @($model.model.expressions | Where-Object name -ceq $name)
+		$sourceMatch = [regex]::Match($expressionSource, "(?ms)^expression $([regex]::Escape($name))\s*=\s*(.*?)(?=^\tannotation |^expression |\z)")
+		if ($artifactExpressions.Count -ne 1 -or -not $sourceMatch.Success) { throw "PBIT model expression is missing or duplicated: $name" }
+		if ((Normalize-Expression $artifactExpressions[0].expression) -cne (Normalize-Expression $sourceMatch.Groups[1].Value)) { throw "PBIT model expression differs from source: $name" }
+	}
+	foreach ($tableName in @('UserRequest','UserRequest_Period','TeamList','FirstTeam_Affected')) {
+		$artifactTables = @($model.model.tables | Where-Object name -ceq $tableName)
+		$tableSource = [System.IO.File]::ReadAllText((Join-Path $project "Model/tables/$tableName.tmdl"))
+		$sourceMatch = [regex]::Match($tableSource, '(?ms)^\tpartition .+? = m\s+mode: import\s+source =\s*(.*?)(?=^\tannotation |\z)')
+		if ($artifactTables.Count -ne 1 -or $artifactTables[0].partitions.Count -ne 1 -or -not $sourceMatch.Success) { throw "PBIT model partition is missing or duplicated: $tableName" }
+		if ((Normalize-Expression $artifactTables[0].partitions[0].source.expression) -cne (Normalize-Expression $sourceMatch.Groups[1].Value)) { throw "PBIT model partition differs from source: $tableName" }
+	}
+
+	$layout = (Read-ArchiveText $layoutEntry ([System.Text.Encoding]::Unicode)) | ConvertFrom-Json
+	$pageCount = @($layout.sections).Count
+	$visualCount = @($layout.sections | ForEach-Object { $_.visualContainers }).Count
+	if ($pageCount -ne 10 -or $visualCount -ne 76) { throw "Unexpected embedded report layout: $pageCount pages and $visualCount visuals." }
 } finally { $archive.Dispose() }
 
 if ($Extractor -eq 'Archive') {
-	Write-Output "Artifact archive verified: $actualHash (required entries and DataMashup present)."
+	Write-Output "Artifact archive verified: $actualHash ($pageCount pages, $visualCount visuals, source-bound Mashup and model)."
 	return
 }
 
