@@ -1,0 +1,37 @@
+{
+  "name": "937f2d6e5dc56c0f0611",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 1201.0718635809988,
+        "y": 0,
+        "z": 6000,
+        "width": 78.92813641900122,
+        "height": 78.92813641900122,
+        "tabOrder": 0
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "image",
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "imageUrl": {
+              "expr": {
+                "ResourcePackageItem": {
+                  "PackageName": "RegisteredResources",
+                  "PackageType": 1,
+                  "ItemName": "logo-itop8593079289067114.png"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

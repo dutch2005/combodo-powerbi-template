@@ -1,0 +1,41 @@
+﻿table TeamList
+
+	column 'id (Primary Key)'
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: id (Primary Key)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+		annotation DataTypeAtRefresh = Int64#####not a type
+
+		annotation PBI_NameAtRefresh = id (Primary Key)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Name
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	partition TeamList-4d4ab014-068a-460d-b3e9-c4f1b6a0335b = m
+		mode: import
+		source = ShapeTeamList("TeamList", FetchQueryCsv("TeamList", url_list_team_name_itop, user_login, user_password))
+
+	annotation PBI_DescriptionAtRefresh
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,113 @@
+{
+  "relationships": [
+    {
+      "source": "803c0f22b05497e5a515",
+      "target": "2539453648e7125cec4a",
+      "type": 2
+    },
+    {
+      "source": "9155de0972872601d5b3",
+      "target": "2a3d488226948d2279e5",
+      "type": 3
+    },
+    {
+      "source": "9155de0972872601d5b3",
+      "target": "f6cf630e1b8e3848eb5f",
+      "type": 3
+    },
+    {
+      "source": "8e6bdd1a00a0404e09c0",
+      "target": "2a3d488226948d2279e5",
+      "type": 3
+    },
+    {
+      "source": "8e6bdd1a00a0404e09c0",
+      "target": "f6cf630e1b8e3848eb5f",
+      "type": 3
+    }
+  ],
+  "objects": {
+    "background": [
+      {
+        "properties": {
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          },
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 0,
+                    "Percent": -0.1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspace": [
+      {
+        "properties": {
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "20D"
+              }
+            }
+          },
+          "image": {
+            "image": {
+              "name": {
+                "expr": {
+                  "Literal": {
+                    "Value": "''"
+                  }
+                }
+              },
+              "url": {
+                "expr": {
+                  "Literal": {
+                    "Value": "''"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "displayArea": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Middle'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "width": {
+            "expr": {
+              "Literal": {
+                "Value": "187L"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

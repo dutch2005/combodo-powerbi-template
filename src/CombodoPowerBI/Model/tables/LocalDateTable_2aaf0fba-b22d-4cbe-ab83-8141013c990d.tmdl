@@ -1,0 +1,119 @@
+﻿table LocalDateTable_2aaf0fba-b22d-4cbe-ab83-8141013c990d
+	isHidden
+	showAsVariationsOnly
+
+	column Date
+		isHidden
+		dataCategory: PaddedDateTableDates
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = User
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="GeneralDateTimeLong" FormatString="G" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####not a type
+
+	column Année = YEAR([Date])
+		isHidden
+		dataCategory: Years
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+		annotation TemplateId = Year
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+		annotation DataTypeAtRefresh = Int64#####not a type
+
+	column NoMois = MONTH([Date])
+		isHidden
+		dataCategory: MonthOfYear
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+		annotation TemplateId = MonthNumber
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+		annotation DataTypeAtRefresh = Int64#####not a type
+
+	column Mois = FORMAT([Date], "MMMM")
+		isHidden
+		dataCategory: Months
+		summarizeBy: none
+		sortByColumn: NoMois
+
+		annotation SummarizationSetBy = User
+
+		annotation TemplateId = Month
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+	column NoTrimestre = INT(([NoMois] + 2) / 3)
+		isHidden
+		dataCategory: QuarterOfYear
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+		annotation TemplateId = QuarterNumber
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+		annotation DataTypeAtRefresh = Int64#####not a type
+
+	column Trimestre = "Trim " & [NoTrimestre]
+		isHidden
+		dataCategory: Quarters
+		summarizeBy: none
+		sortByColumn: NoTrimestre
+
+		annotation SummarizationSetBy = User
+
+		annotation TemplateId = Quarter
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+	column Jour = DAY([Date])
+		isHidden
+		dataCategory: DayOfMonth
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+		annotation TemplateId = Day
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+		annotation DataTypeAtRefresh = Int64#####not a type
+
+	hierarchy 'Hiérarchie de dates'
+
+		level Année
+			column: Année
+
+		level Trimestre
+			column: Trimestre
+
+		level Mois
+			column: Mois
+
+		level Jour
+			column: Jour
+
+		annotation TemplateId = DateHierarchy
+
+	partition LocalDateTable_2aaf0fba-b22d-4cbe-ab83-8141013c990d-cf5eff8f-70af-41dd-b5bb-057e7112ae18 = calculated
+		mode: import
+		source = Calendar(Date(Year(MIN('UserRequest_Period'[End date (date)])), 1, 1), Date(Year(MAX('UserRequest_Period'[End date (date)])), 12, 31))
+
+	annotation __PBI_LocalDateTable = true
+

@@ -1,0 +1,677 @@
+﻿table UserRequest
+
+	column 'id (Primary Key)'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: id (Primary Key)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = id (Primary Key)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Operational status'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Operational status
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Operational status
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Status
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Status
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Ref
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Ref
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Ref
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Organization
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Organization
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Organization
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Organization Name'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Organization Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Organization Name
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Caller
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Caller
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Caller
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Caller Name'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Caller Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Caller Name
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Team
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Team
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Team
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Team_Name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Team_Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Team_Name
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Agent
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Agent
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Agent
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Agent Name'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Agent Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Agent Name
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Impact
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Impact
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Impact
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Urgency
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Urgency
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Urgency
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Priority
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Priority
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Priority
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column Origin
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Origin
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Origin
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Request Type'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Request Type
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Request Type
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Start date (date)'
+		dataType: dateTime
+		formatString: Long Date
+		summarizeBy: none
+		sourceColumn: Start date (date)
+
+		variation Variation
+			isDefault
+			relationship: f6c2bae6-969c-46dd-913b-9aca61a4d70b
+			defaultHierarchy: LocalDateTable_dbbc09b2-b142-4da4-b75c-6e89891c6560.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongDate" FormatString="D" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Date
+
+		annotation PBI_NameAtRefresh = Start date (date)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Start date (time)'
+		dataType: dateTime
+		formatString: Long Time
+		summarizeBy: none
+		sourceColumn: Start date (time)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongTime" FormatString="T" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Time
+
+		annotation PBI_NameAtRefresh = Start date (time)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'End date (date)'
+		dataType: dateTime
+		formatString: Long Date
+		summarizeBy: none
+		sourceColumn: End date (date)
+
+		variation Variation
+			isDefault
+			relationship: 691d0726-d38d-483d-860d-8f10e57a07b8
+			defaultHierarchy: LocalDateTable_db8f13ef-d2c8-4b76-a9eb-4cd3d94dd994.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongDate" FormatString="D" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Date
+
+		annotation PBI_NameAtRefresh = End date (date)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'End date (time)'
+		dataType: dateTime
+		formatString: Long Time
+		summarizeBy: none
+		sourceColumn: End date (time)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongTime" FormatString="T" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Time
+
+		annotation PBI_NameAtRefresh = End date (time)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Last update (date)'
+		dataType: dateTime
+		formatString: Long Date
+		summarizeBy: none
+		sourceColumn: Last update (date)
+
+		variation Variation
+			isDefault
+			relationship: 2bf642b1-6b7e-439f-a7c9-8ac73355ff04
+			defaultHierarchy: LocalDateTable_8ac94ce2-562f-4321-a007-c033646c5a72.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongDate" FormatString="D" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Date
+
+		annotation PBI_NameAtRefresh = Last update (date)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Last update (time)'
+		dataType: dateTime
+		formatString: Long Time
+		summarizeBy: none
+		sourceColumn: Last update (time)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongTime" FormatString="T" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Time
+
+		annotation PBI_NameAtRefresh = Last update (time)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Assignment date (date)'
+		dataType: dateTime
+		formatString: Long Date
+		summarizeBy: none
+		sourceColumn: Assignment date (date)
+
+		variation Variation
+			isDefault
+			relationship: 58e56a70-183f-45ec-8729-28a3d4fcd064
+			defaultHierarchy: LocalDateTable_13032e83-4018-4f63-82fe-9de828a2a2d1.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongDate" FormatString="D" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Date
+
+		annotation PBI_NameAtRefresh = Assignment date (date)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Assignment date (time)'
+		dataType: dateTime
+		formatString: Long Time
+		summarizeBy: none
+		sourceColumn: Assignment date (time)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongTime" FormatString="T" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Time
+
+		annotation PBI_NameAtRefresh = Assignment date (time)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Resolution date (date)'
+		dataType: dateTime
+		formatString: Long Date
+		summarizeBy: none
+		sourceColumn: Resolution date (date)
+
+		variation Variation
+			isDefault
+			relationship: 30573f74-c499-4c31-b71d-0af8f14c0ca7
+			defaultHierarchy: LocalDateTable_776b4083-be1c-4ef3-afbe-07e734b084fb.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongDate" FormatString="D" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Date
+
+		annotation PBI_NameAtRefresh = Resolution date (date)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Resolution date (time)'
+		dataType: dateTime
+		formatString: Long Time
+		summarizeBy: none
+		sourceColumn: Resolution date (time)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongTime" FormatString="T" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Time
+
+		annotation PBI_NameAtRefresh = Resolution date (time)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Last pending date (date)'
+		dataType: dateTime
+		formatString: Long Date
+		summarizeBy: none
+		sourceColumn: Last pending date (date)
+
+		variation Variation
+			isDefault
+			relationship: e6c28f04-0b2d-47c9-ae8b-d0a884f60073
+			defaultHierarchy: LocalDateTable_01c971d9-b177-4e89-b60d-a8ef648c5a87.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongDate" FormatString="D" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Date
+
+		annotation PBI_NameAtRefresh = Last pending date (date)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Last pending date (time)'
+		dataType: dateTime
+		formatString: Long Time
+		summarizeBy: none
+		sourceColumn: Last pending date (time)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="LongTime" FormatString="T" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####Time
+
+		annotation PBI_NameAtRefresh = Last pending date (time)
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'SLA tto passed'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: SLA tto passed
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = SLA tto passed
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'SLA ttr passed'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: SLA ttr passed
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = SLA ttr passed
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Resolution delay'
+		dataType: double
+		formatString: 0
+		summarizeBy: sum
+		sourceColumn: Resolution delay
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+		annotation DataTypeAtRefresh = Double#####not a type
+
+		annotation PBI_NameAtRefresh = Resolution delay
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Resolution code'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Resolution code
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Resolution code
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'TTO Deadline'
+		dataType: dateTime
+		formatString: General Date
+		summarizeBy: none
+		sourceColumn: TTO Deadline
+
+		variation Variation
+			isDefault
+			relationship: 6fc0933a-6ab6-4be3-a183-77a29563316d
+			defaultHierarchy: LocalDateTable_deb978f7-1033-4416-95d9-e5698661e2ef.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="GeneralDateTimeLong" FormatString="G" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####not a type
+
+		annotation PBI_NameAtRefresh = TTO Deadline
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'TTR Deadline'
+		dataType: dateTime
+		formatString: General Date
+		summarizeBy: none
+		sourceColumn: TTR Deadline
+
+		variation Variation
+			isDefault
+			relationship: 1c2248d2-9c79-4b3c-8494-cd5d85417623
+			defaultHierarchy: LocalDateTable_8108d232-3af5-434d-ba7e-20a5ca28f154.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="DateTimeGeneralPattern"><DateTimes><DateTime LCID="1036" Group="GeneralDateTimeLong" FormatString="G" /></DateTimes></Format>
+
+		annotation DataTypeAtRefresh = DateTime#####not a type
+
+		annotation PBI_NameAtRefresh = TTR Deadline
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column 'Service name'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Service name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+		annotation DataTypeAtRefresh = String#####not a type
+
+		annotation PBI_NameAtRefresh = Service name
+
+		annotation PBI_WasHiddenAtRefresh = False
+
+	column TeamFirst = IF([Team_Name]=RELATED(TeamList[Name]),"yes","no")
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+	column TeamFirstName = Related(TeamList[Name])
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+	column Hour_Start_Date = Hour(UserRequest[Start date (time)])
+		formatString: 0
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column Day_Start_Date = FORMAT(UserRequest[Start date (date)],"ddd")
+		dataType: string
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+	column Week_Start_Date = FORMAT(UserRequest[Start date (date)],"ww")
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+	column Day_Number_Start_Date = FORMAT(UserRequest[Start date (date)],"w")
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation Format = <Format Format="Text" />
+
+	partition UserRequest-f0906ee1-7967-4349-bb05-266ce5be058d = m
+		mode: import
+		source = ShapeUserRequest("UserRequest", FetchQueryCsv("UserRequest", url_user_request_itop, user_login, user_password))
+
+	annotation PBI_DescriptionAtRefresh
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

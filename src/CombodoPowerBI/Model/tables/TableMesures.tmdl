@@ -1,0 +1,200 @@
+﻿table TableMesures
+
+	measure 'Nombre de SLA tto passed pour yes' =
+			
+			CALCULATE(
+				COUNTA('UserRequest'[SLA tto passed]),
+				'UserRequest'[SLA tto passed] IN { "yes" }
+			)
+		formatString: 0
+
+		extendedProperty MeasureTemplate =
+				{
+				  "version": 0,
+				  "daxTemplateName": "FilteredMeasure"
+				}
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+	measure 'Nombre de SLA ttr passed pour yes' =
+			
+			CALCULATE(
+				COUNTA('UserRequest'[SLA ttr passed]),
+				'UserRequest'[SLA ttr passed] IN { "yes" }
+			)
+		formatString: 0
+
+		extendedProperty MeasureTemplate =
+				{
+				  "version": 0,
+				  "daxTemplateName": "FilteredMeasure"
+				}
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+	measure Taux_TTO_over =
+			CALCULATE(
+			COUNTAX(FILTER('UserRequest',[SLA tto passed]="yes"),'UserRequest'[Ref])
+			/COUNT('UserRequest'[Ref]))
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+
+		annotation Format = <Format Format="Percentage" Accuracy="2" />
+
+	measure Taux_TTR_over =
+			CALCULATE(
+			COUNTAX(FILTER('UserRequest',[SLA ttr passed]="yes"),'UserRequest'[Ref])
+			/COUNT('UserRequest'[Ref]))
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+
+		annotation Format = <Format Format="Percentage" Accuracy="2" />
+
+	measure NB_UR_ResolveTeamFirst = CALCULATE(COUNTROWS(UserRequest),UserRequest[TeamFirst]="yes")
+		formatString: 0
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+	measure Average_Resolution_Delay = AVERAGE(UserRequest[Resolution delay])
+
+		annotation Format = <Format Format="General" />
+
+	measure Average_Resolution_Delay_Time =
+			
+			VAR days =
+			    ROUNDDOWN ( [Average_Resolution_Delay] / 86400, 0 )
+			VAR hours =
+			    ROUNDDOWN ( MOD( [Average_Resolution_Delay], 86400) / 3600, 0 )
+			VAR minutes =
+			    ROUNDDOWN ( MOD ( [Average_Resolution_Delay], 3600 ) / 60, 0 )
+			VAR seconds =
+			    INT ( MOD ( [Average_Resolution_Delay], 60 ) )
+			RETURN
+			     FORMAT(days,"00") & "d "
+				& FORMAT(hours,"00") & "h "
+			        & FORMAT(minutes, "00")
+			        & "m "
+			        & FORMAT(seconds, "00")
+			        & "s "
+
+		annotation Format = <Format Format="Text" />
+
+	measure NB_UR_Create = CALCULATE(COUNTROWS(UserRequest_Period))
+		formatString: 0
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+	measure NB_UR_Resolved = CALCULATE(COUNTROWS(UserRequest_Period),UserRequest_Period[Status] IN {"resolved","closed"})
+		formatString: 0
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+	measure 'Count UR Create' =
+			
+			var ym = MAX('Calendrier'[MonthKey])
+			return
+			COALESCE(
+			    COUNTROWS(
+			        FILTER(
+			            ALLSELECTED('UserRequest_Period'),
+			            (YEAR([Start date (date)])*100+MONTH([Start date (date)]))=ym
+			        )
+			    ),0
+			)
+		formatString: 0
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+	measure 'Count UR Resolved' =
+			
+			var ym = MAX('Calendrier'[MonthKey])
+			return
+			COALESCE(
+			    COUNTROWS (
+			        CALCULATETABLE (
+			            'UserRequest_Period',
+			            FILTER (
+			                ALLSELECTED('UserRequest_Period'),
+			                YEAR([Resolution date (date)])*100+MONTH([Resolution date (date)])=ym
+			            ),
+			            FILTER(ALLSELECTED('UserRequest_Period'),UserRequest_Period[Operational status] IN {"resolved","closed"})
+			        )
+			),0
+			)
+		formatString: 0
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+	measure 'Count UR Create Team An' =
+			
+			var team = MAX('TeamList'[Name])
+			var year = MAX('Calendrier'[YearKey])
+			return
+			COALESCE(
+			    COUNTROWS (
+			        CALCULATETABLE (
+			            'UserRequest_Period',
+			            FILTER (
+			                ALLSELECTED('UserRequest_Period'),
+			            	(YEAR([Start date (date)])*100)=year
+			            ),
+			            FILTER(ALLSELECTED('UserRequest_Period'),UserRequest_Period[Team_Name]=team)
+			        )
+			),0
+			)
+		formatString: 0
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+	measure 'Count UR Resolved Team' =
+			
+			var team = MAX('TeamList'[Name])
+			var ym = MAX('Calendrier'[MonthKey])
+			return
+			COALESCE(
+			    COUNTROWS (
+			        CALCULATETABLE (
+			            'UserRequest_Period',
+			            FILTER (
+			                ALLSELECTED('UserRequest_Period'),
+			                YEAR([Resolution date (date)])*100+MONTH([Resolution date (date)])=ym
+			            ),
+			            FILTER(ALLSELECTED('UserRequest_Period'),UserRequest_Period[Operational status] IN {"resolved","closed"}),
+			            FILTER(ALLSELECTED('UserRequest_Period'),UserRequest_Period[Team_Name]=team)
+			        )
+			),0
+			)
+		formatString: 0
+
+		annotation Format = <Format Format="NumberWhole" Accuracy="0" />
+
+	measure Taux_TTR_over_period =
+			CALCULATE(
+			COUNTAX(FILTER('UserRequest_Period',[SLA ttr passed]="yes"),'UserRequest_Period'[Ref])
+			/COUNT('UserRequest_Period'[Ref]))
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+
+		annotation Format = <Format Format="Percentage" Accuracy="2" />
+
+	measure Taux_TTO_over_period =
+			CALCULATE(
+			COUNTAX(FILTER('UserRequest_Period',[SLA tto passed]="yes"),'UserRequest_Period'[Ref])
+			/COUNT('UserRequest_Period'[Ref]))
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+
+		annotation Format = <Format Format="Percentage" Accuracy="2" />
+
+	partition TableMesures-082da9c3-4e4a-4e36-b224-defd4ae37750 = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Colonne 1" = _t]),
+				    #"Type modifié" = Table.TransformColumnTypes(Source,{{"Colonne 1", type text}}),
+				    #"Colonnes supprimées" = Table.RemoveColumns(#"Type modifié",{"Colonne 1"})
+				in
+				    #"Colonnes supprimées"
+
+	annotation PBI_DescriptionAtRefresh
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

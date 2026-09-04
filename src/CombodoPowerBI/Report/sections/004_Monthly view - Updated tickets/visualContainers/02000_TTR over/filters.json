@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Filterc68e5ebe3d80305d49ee",
+    "expression": {
+      "Measure": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "TableMesures"
+          }
+        },
+        "Property": "Taux_TTR_over"
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 0
+  }
+]

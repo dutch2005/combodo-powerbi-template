@@ -1,0 +1,105 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 559,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 1708.7959259541212,
+            "y": 0
+          },
+          "nodeIndex": "TeamList",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 1316.6706001123905,
+            "y": 0
+          },
+          "nodeIndex": "FirstTeam_Affected",
+          "size": {
+            "height": 164.43312101910828,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 1711.0071160169443,
+            "y": 174.88042914631282
+          },
+          "nodeIndex": "Calendrier",
+          "size": {
+            "height": 314.61979166666663,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 1436.5901218554732,
+            "y": 450.23374886977615
+          },
+          "nodeIndex": "Calendrier_ResolutionDate",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 774.58024214240379,
+            "y": 3.3121019108280052
+          },
+          "nodeIndex": "UserRequest",
+          "size": {
+            "height": 731.37886584672788,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 2009.3516215436757,
+            "y": 0
+          },
+          "nodeIndex": "TableMesures",
+          "size": {
+            "height": 444.32258064516134,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 1141.3220197255575,
+            "y": 216.66666666666663
+          },
+          "nodeIndex": "UserRequest_Period",
+          "size": {
+            "height": 524.54059254870856,
+            "width": 234
+          },
+          "zIndex": 6
+        }
+      ],
+      "name": "Toutes les tables",
+      "zoomValue": 83.475886413380735,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false
+    }
+  ],
+  "selectedDiagram": "Toutes les tables",
+  "defaultDiagram": "Toutes les tables"
+}

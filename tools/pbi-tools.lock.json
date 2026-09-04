@@ -1,0 +1,19 @@
+{
+  "version": "1.2.0",
+  "image": "ghcr.io/pbi-tools/pbi-tools-core:1.2.0@sha256:f58b987d9adc48b43fbb5016d4da510d92768743028d67d604cf22db956c2e84",
+  "source": "https://github.com/pbi-tools/pbi-tools/pkgs/container/pbi-tools-core/331983160?tag=1.2.0",
+  "legacySha256": "8DDD9A0FDC9AFC1D8DE2401953B4DF89BB8AC289734976F50F3D724620DB1014",
+  "desktopBuild": {
+    "pbiToolsVersion": "1.2.0",
+    "pbiToolsUrl": "https://github.com/pbi-tools/pbi-tools/releases/tag/1.2.0",
+    "pbiToolsZipSha256": "BCA88ABB9F30D17EE354A06E75EB3F6C6BDEEB9C98A46990E86978A52A3876B7",
+    "pbiToolsExeSha256": "199D9D2437C5FCAF8BBFD1FAE3FA8C487DEF6A00C5C0E233416D7FA0DD1502A3",
+    "powerBiDesktopVersion": "2.157.1354.0",
+    "packagingDllSha256": "D0A2AFEBAE227785B702E30286994F51412DA93D6A32903B235AA2208D6E5EDD",
+    "monoCecilVersion": "0.11.5",
+    "monoCecilSha256": "9C2908709DA6761E9B5B9D4D46102D65851145BAC987787D6C5A05FFE5689487",
+    "patchedExeSha256": "0DE62335E50E28C3A187CBCE08CE2FA25877AF6E8D3DF8FBACE73AD7DA7B4D53",
+    "compatibilityIssue": "https://github.com/pbi-tools/pbi-tools/issues/434",
+    "coreMashupLimitation": "https://github.com/pbi-tools/pbi-tools/issues/16"
+  }
+}

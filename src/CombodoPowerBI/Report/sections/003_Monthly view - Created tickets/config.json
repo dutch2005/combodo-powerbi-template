@@ -1,0 +1,131 @@
+{
+  "relationships": [
+    {
+      "source": "1a9f58020e30bd8014b5",
+      "target": "240d49ede70001986104",
+      "type": 1
+    },
+    {
+      "source": "1a9f58020e30bd8014b5",
+      "target": "398e701155469c257000",
+      "type": 1
+    },
+    {
+      "source": "1a9f58020e30bd8014b5",
+      "target": "33289c6700911c46660e",
+      "type": 1
+    },
+    {
+      "source": "1a9f58020e30bd8014b5",
+      "target": "6df651e97c2987a04b0e",
+      "type": 1
+    },
+    {
+      "source": "1a9f58020e30bd8014b5",
+      "target": "9395f574dd0043c5183e",
+      "type": 3
+    }
+  ],
+  "objects": {
+    "outspacePane": [
+      {
+        "properties": {
+          "width": {
+            "expr": {
+              "Literal": {
+                "Value": "203L"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "background": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 0,
+                    "Percent": -0.1
+                  }
+                }
+              }
+            }
+          },
+          "image": {
+            "image": {
+              "name": {
+                "expr": {
+                  "Literal": {
+                    "Value": "''"
+                  }
+                }
+              },
+              "url": {
+                "expr": {
+                  "Literal": {
+                    "Value": "''"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspace": [
+      {
+        "properties": {
+          "image": {
+            "image": {
+              "name": {
+                "expr": {
+                  "Literal": {
+                    "Value": "''"
+                  }
+                }
+              },
+              "url": {
+                "expr": {
+                  "Literal": {
+                    "Value": "''"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "20D"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "displayArea": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Middle'"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

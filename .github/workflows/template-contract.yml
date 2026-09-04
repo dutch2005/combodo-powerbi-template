@@ -1,0 +1,56 @@
+name: Power BI template contract
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  power-query:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Execute URL behavior in Microsoft Power Query
+        shell: pwsh
+        run: |
+          $pqTest = ./scripts/prepare-pqtest.ps1
+          ./tests/RunPowerQueryTests.ps1 -PqTestExe $pqTest
+
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Validate pinned tooling
+        shell: pwsh
+        run: ./tests/PbiToolsWrapperTest.ps1
+
+      - name: Validate locale and model contracts
+        shell: pwsh
+        run: |
+          ./tests/assert-contract.ps1
+          ./tests/assert-model-parity.ps1
+
+      - name: Verify release artifact archive
+        shell: pwsh
+        run: |
+          ./scripts/verify-artifact.ps1 -Extractor Archive
+          ./tests/assert-no-personal-data.ps1
+
+      - name: Upload verified template
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Combodo-PowerBI-Template-1.1.0
+          path: |
+            artifacts/Combodo_PowerBI_Reporting_Template_1.1.0.pbit
+            artifacts/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 7

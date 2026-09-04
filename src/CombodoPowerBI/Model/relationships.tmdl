@@ -1,0 +1,105 @@
+﻿relationship 691d0726-d38d-483d-860d-8f10e57a07b8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest.'End date (date)'
+	toColumn: LocalDateTable_db8f13ef-d2c8-4b76-a9eb-4cd3d94dd994.Date
+
+relationship 58e56a70-183f-45ec-8729-28a3d4fcd064
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest.'Assignment date (date)'
+	toColumn: LocalDateTable_13032e83-4018-4f63-82fe-9de828a2a2d1.Date
+
+relationship e6c28f04-0b2d-47c9-ae8b-d0a884f60073
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest.'Last pending date (date)'
+	toColumn: LocalDateTable_01c971d9-b177-4e89-b60d-a8ef648c5a87.Date
+
+relationship 6fc0933a-6ab6-4be3-a183-77a29563316d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest.'TTO Deadline'
+	toColumn: LocalDateTable_deb978f7-1033-4416-95d9-e5698661e2ef.Date
+
+relationship 1c2248d2-9c79-4b3c-8494-cd5d85417623
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest.'TTR Deadline'
+	toColumn: LocalDateTable_8108d232-3af5-434d-ba7e-20a5ca28f154.Date
+
+relationship 31334086-66bd-441f-b07d-f33bb86c0ae6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendrier.Date
+	toColumn: LocalDateTable_72237624-51d9-4d7c-a00e-b2e6ceaf0d5c.Date
+
+relationship f6c2bae6-969c-46dd-913b-9aca61a4d70b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest.'Start date (date)'
+	toColumn: LocalDateTable_dbbc09b2-b142-4da4-b75c-6e89891c6560.Date
+
+relationship 30573f74-c499-4c31-b71d-0af8f14c0ca7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest.'Resolution date (date)'
+	toColumn: LocalDateTable_776b4083-be1c-4ef3-afbe-07e734b084fb.Date
+
+relationship 2bf642b1-6b7e-439f-a7c9-8ac73355ff04
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest.'Last update (date)'
+	toColumn: LocalDateTable_8ac94ce2-562f-4321-a007-c033646c5a72.Date
+
+relationship 85b6559d-0e62-41b3-a2ae-6381a3bc0491
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest_Period.'End date (date)'
+	toColumn: LocalDateTable_2aaf0fba-b22d-4cbe-ab83-8141013c990d.Date
+
+relationship 2d642e37-9657-493a-8cfa-f0dcbad40a7e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest_Period.'Last update (date)'
+	toColumn: LocalDateTable_fae11eeb-6ed5-4043-b15e-6a2ca478d134.Date
+
+relationship 794bb2dd-8977-42c9-86c7-6ced9582e0ed
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest_Period.'Assignment date (date)'
+	toColumn: LocalDateTable_e2f9eb39-e335-411f-8000-dcb0a986f83b.Date
+
+relationship 28403f92-d5a0-450d-b6bf-6aa3c531c0ec
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest_Period.'Last pending date (date)'
+	toColumn: LocalDateTable_fc473b2b-367d-4df8-ad59-e942b1e91f13.Date
+
+relationship 1cd6c3c2-b15e-4d1f-a851-5b1f3bed36ce
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest_Period.'TTO Deadline'
+	toColumn: LocalDateTable_3a5022ea-fdee-4463-a568-95b447b53a02.Date
+
+relationship 21c2ec16-e47a-458f-8dd2-b4a4e5245c00
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest_Period.'TTR Deadline'
+	toColumn: LocalDateTable_7d90c387-1f0d-4b28-9fe8-7c937b6c2b95.Date
+
+relationship 5da40cdc-36b2-4485-867a-4f3d192d3008
+	fromColumn: UserRequest_Period.'Resolution date (date)'
+	toColumn: Calendrier_ResolutionDate.Date
+
+relationship 05bff6bc-164b-4c8f-843b-c08af10f438b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendrier_ResolutionDate.Date
+	toColumn: LocalDateTable_3c53a1bd-d21b-4484-b314-965b10bf8748.Date
+
+relationship 8a448015-103a-49df-8a40-90457968fd86
+	joinOnDateBehavior: datePartOnly
+	fromColumn: UserRequest_Period.'Start date (date)'
+	toColumn: LocalDateTable_2b0ce1d3-d1fc-4160-8780-d7e7936f18b9.Date
+
+relationship d65e2c7e-9d6b-4b7f-8738-29f2cb46d691
+	fromColumn: FirstTeam_Affected.FirstTeam_affected_id
+	toColumn: TeamList.'id (Primary Key)'
+
+relationship a31ed2f0-a427-48e4-86eb-274da8d5f20f
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: FirstTeam_Affected.UserRequest_id
+	toColumn: UserRequest.'id (Primary Key)'
+
+relationship 8c930a63-aefd-4bae-b9db-e996e9fe36d6
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: FirstTeam_Affected.UserRequest_id
+	toColumn: UserRequest_Period.'id (Primary Key)'
+

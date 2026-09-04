@@ -1,0 +1,42 @@
+﻿model Model
+	culture: fr-FR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: fr-FR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBIDesktopVersion = 2.100.1182.0 (21.12)
+
+annotation PBI_QueryOrder = ["UserRequest","UserRequest_Period","TeamList","Requête1","Calendrier_ResolutionDate","Calendrier","Mesures","TableMesures","FirstTeam_Affected","user_login","user_password","url_user_request_itop","url_list_team_name_itop","url_list_first_team_dispatched_itop"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+ref table DateTableTemplate_ad5baaee-2a34-4a58-ae52-55f3ab70b6ac
+ref table TeamList
+ref table FirstTeam_Affected
+ref table UserRequest
+ref table LocalDateTable_db8f13ef-d2c8-4b76-a9eb-4cd3d94dd994
+ref table LocalDateTable_13032e83-4018-4f63-82fe-9de828a2a2d1
+ref table LocalDateTable_01c971d9-b177-4e89-b60d-a8ef648c5a87
+ref table LocalDateTable_deb978f7-1033-4416-95d9-e5698661e2ef
+ref table LocalDateTable_8108d232-3af5-434d-ba7e-20a5ca28f154
+ref table Calendrier_ResolutionDate
+ref table Calendrier
+ref table LocalDateTable_72237624-51d9-4d7c-a00e-b2e6ceaf0d5c
+ref table LocalDateTable_dbbc09b2-b142-4da4-b75c-6e89891c6560
+ref table LocalDateTable_776b4083-be1c-4ef3-afbe-07e734b084fb
+ref table TableMesures
+ref table LocalDateTable_8ac94ce2-562f-4321-a007-c033646c5a72
+ref table UserRequest_Period
+ref table LocalDateTable_2aaf0fba-b22d-4cbe-ab83-8141013c990d
+ref table LocalDateTable_fae11eeb-6ed5-4043-b15e-6a2ca478d134
+ref table LocalDateTable_e2f9eb39-e335-411f-8000-dcb0a986f83b
+ref table LocalDateTable_fc473b2b-367d-4df8-ad59-e942b1e91f13
+ref table LocalDateTable_3a5022ea-fdee-4463-a568-95b447b53a02
+ref table LocalDateTable_7d90c387-1f0d-4b28-9fe8-7c937b6c2b95
+ref table LocalDateTable_3c53a1bd-d21b-4484-b314-965b10bf8748
+ref table LocalDateTable_2b0ce1d3-d1fc-4160-8780-d7e7936f18b9
+
+ref cultureInfo fr-FR
+

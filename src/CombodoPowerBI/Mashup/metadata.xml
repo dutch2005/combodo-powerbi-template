@@ -1,0 +1,14 @@
+<LocalPackageMetadataFile>
+  <Items>
+    <Item>
+      <ItemLocation>
+        <ItemType>AllFormulas</ItemType>
+        <ItemPath />
+      </ItemLocation>
+      <StableEntries>
+        <Entry Type="IsTypeDetectionEnabled" Value="sTrue" />
+        <Entry Type="RunBackgroundAnalysis" Value="sFalse" />
+      </StableEntries>
+    </Item>
+  </Items>
+</LocalPackageMetadataFile>

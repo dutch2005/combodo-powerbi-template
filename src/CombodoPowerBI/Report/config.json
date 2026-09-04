@@ -1,0 +1,52 @@
+{
+  "version": "5.27",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY21SU11",
+      "version": "5.28",
+      "type": 2
+    },
+    "customTheme": {
+      "name": "Solar_Combodo28300515392004355.json",
+      "version": "5.28",
+      "type": 1
+    }
+  },
+  "activeSectionIndex": 1,
+  "defaultDrillFilterOtherVisuals": true,
+  "linguisticSchemaSyncVersion": 2,
+  "settings": {
+    "useNewFilterPaneExperience": true,
+    "allowChangeFilterTypes": true,
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": 1
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

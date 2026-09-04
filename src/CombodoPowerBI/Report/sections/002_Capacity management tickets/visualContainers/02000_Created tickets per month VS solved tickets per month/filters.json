@@ -1,0 +1,53 @@
+[
+  {
+    "name": "Filterc819125437cdc96e0a36",
+    "expression": {
+      "Column": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "Calendrier"
+          }
+        },
+        "Property": "MonthKey"
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 0
+  },
+  {
+    "name": "Filter5fef403ee59690b0e537",
+    "expression": {
+      "Measure": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "TableMesures"
+          }
+        },
+        "Property": "Count UR Resolved"
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 1
+  },
+  {
+    "name": "Filter77315c25700ae57c4820",
+    "expression": {
+      "Measure": {
+        "Expression": {
+          "SourceRef": {
+            "Entity": "TableMesures"
+          }
+        },
+        "Property": "Count UR Create"
+      }
+    },
+    "type": "Advanced",
+    "howCreated": 0,
+    "isHiddenInViewMode": false,
+    "ordinal": 2
+  }
+]

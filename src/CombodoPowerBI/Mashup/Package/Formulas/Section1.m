@@ -1,0 +1,175 @@
+section Section1;
+
+shared BuildExportUrl = (queryName as text, queryUrl as nullable text) as text => let
+    Trimmed = if queryUrl = null then "" else Text.Trim(queryUrl),
+    ValidUrl = if Trimmed = "" then error Error.Record("Configuration.Error", queryName & ": query URL is blank.", "Copy the Query Phrasebook export URL from iTop.") else Trimmed,
+    Parts = Uri.Parts(ValidUrl),
+    Existing = Record.ToTable(Record.FieldOrDefault(Parts, "Query", [])),
+    GetValue = (name as text) as nullable text => let Matches = Table.SelectRows(Existing, each Text.Lower(Text.From([Name])) = Text.Lower(name)) in if Table.IsEmpty(Matches) then null else Text.From(Matches{0}[Value]),
+    Path = Text.From(Record.FieldOrDefault(Parts, "Path", "")),
+    GuiSuffix = "/pages/UI.php",
+    IsGuiUrl = Text.EndsWith(Text.Lower(Path), Text.Lower(GuiSuffix)),
+    GuiClass = GetValue("class"),
+    GuiId = GetValue("id"),
+    DirectId = GetValue("query"),
+    QueryValue = if IsGuiUrl then GuiId else DirectId,
+    ValidGuiUrl = not IsGuiUrl or (GuiClass <> null and Text.Lower(GuiClass) = "queryoql" and GuiId <> null and Text.Trim(GuiId) <> ""),
+    CheckedGuiUrl = if ValidGuiUrl then ValidUrl else error Error.Record("Configuration.Error", queryName & ": the iTop GUI URL does not identify a QueryOQL record.", "Open the QueryOQL details page or copy its export-v2 URL."),
+    CheckedUrl = if QueryValue <> null and Text.Trim(QueryValue) <> "" then CheckedGuiUrl else error Error.Record("Configuration.Error", queryName & ": the iTop URL does not contain a saved query id.", "Open the QueryOQL details page or copy its export-v2 URL."),
+    Overridden = {"format", "login_mode", "no_localize", "date_format", "charset", "separator", "query"},
+    GuiOnly = if IsGuiUrl then {"operation", "class", "id"} else {},
+    Kept = Table.SelectRows(Existing, each not List.Contains(List.Combine({Overridden, GuiOnly}), Text.Lower(Text.From([Name])))),
+    QueryId = #table({"Name", "Value"}, {{"query", Text.Trim(QueryValue)}}),
+    Required = #table({"Name", "Value"}, {{"format", "csv"}, {"login_mode", "basic"}, {"no_localize", "1"}, {"date_format", "Y-m-d H:i:s"}, {"charset", "UTF-8"}, {"separator", ","}}),
+    Query = Uri.BuildQueryString(Record.FromTable(Table.Combine({Kept, QueryId, Required}))),
+    WithoutFragment = Text.BeforeDelimiter(CheckedUrl & "#", "#"),
+    OriginalBase = Text.BeforeDelimiter(WithoutFragment & "?", "?"),
+    Base = if IsGuiUrl then Text.Start(OriginalBase, Text.Length(OriginalBase) - Text.Length(GuiSuffix)) & "/webservices/export-v2.php" else OriginalBase
+in
+    Base & "?" & Query;
+
+shared FetchQueryCsv = (queryName as text, queryUrl as nullable text, login as nullable text, password as nullable text) as table => let
+    User = if login = null then "" else Text.Trim(login),
+    Secret = if password = null then "" else Text.From(password),
+    Credentials = if User = "" or Text.Trim(Secret) = "" then error Error.Record("Configuration.Error", queryName & ": login or password is blank.", "Enter both iTop credentials in the template parameters.") else [User = User, Secret = Secret],
+    Authorization = "Basic " & Binary.ToText(Text.ToBinary(Credentials[User] & ":" & Credentials[Secret], TextEncoding.Utf8), BinaryEncoding.Base64),
+    RequestAttempt = try Web.Contents(BuildExportUrl(queryName, queryUrl), [Headers = [Authorization = Authorization, Accept = "text/csv"]]),
+    RawResponse = if RequestAttempt[HasError] then error Error.Record("DataSource.Error", queryName & ": the iTop request failed.", "Verify the Query Phrasebook URL, access rights, and credentials.") else RequestAttempt[Value],
+    Metadata = Value.Metadata(RawResponse),
+    Response = Binary.Buffer(RawResponse),
+    Status = Number.From(Record.FieldOrDefault(Metadata, "Response.Status", 200)),
+    Headers = Record.FieldOrDefault(Metadata, "Headers", []),
+    ContentType = Text.Lower(Text.From(Record.FieldOrDefault(Headers, "Content-Type", Record.FieldOrDefault(Headers, "content-type", "")))),
+    PreviewAttempt = try Text.Lower(Text.TrimStart(Text.FromBinary(Binary.Range(Response, 0, Number.Min({Binary.Length(Response), 256})), TextEncoding.Utf8))),
+    Preview = if PreviewAttempt[HasError] then "" else PreviewAttempt[Value],
+    IsHtml = Text.Contains(ContentType, "text/html") or Text.StartsWith(Preview, "<!doctype html") or Text.StartsWith(Preview, "<html") or Text.Contains(Preview, "<form"),
+    ValidResponse = if Status >= 400 then error Error.Record("DataSource.Error", queryName & ": iTop returned HTTP " & Text.From(Status) & ".", "Verify the Query Phrasebook URL, access rights, and credentials.") else if IsHtml then error Error.Record("DataSource.Error", queryName & ": iTop returned HTML instead of CSV.", "Verify the Query Phrasebook URL and credentials; the response may be a login or error page.") else Response,
+    ParsedAttempt = try Table.PromoteHeaders(Csv.Document(ValidResponse, [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv, ExtraValues = ExtraValues.Error]), [PromoteAllScalars = true]),
+    Parsed = if ParsedAttempt[HasError] then error Error.Record("DataFormat.Error", queryName & ": iTop returned malformed CSV.", "Export the saved query as CSV and verify its response.") else ParsedAttempt[Value]
+in
+    Parsed;
+
+shared RequireColumns = (queryName as text, data as table, required as list) as table => let
+    Missing = List.Difference(required, Table.ColumnNames(data), Comparer.Ordinal),
+    Checked = if List.IsEmpty(Missing) then Table.SelectColumns(data, required) else error Error.Record("Schema.Error", queryName & ": required iTop fields are missing: " & Text.Combine(Missing, ", ") & ".", "Verify the Query Phrasebook URL, extension version, access rights, and credentials.")
+in
+    Checked;
+
+shared ParseITopDateTime = (queryName as text, value as any) as nullable datetime => let
+    TextValue = if value = null then "" else Text.Trim(Text.From(value)),
+    Parsed = try DateTime.FromText(Text.Replace(TextValue, " ", "T"), [Format = "yyyy-MM-ddTHH:mm:ss", Culture = "en-US"])
+in
+    if TextValue = "" then null else if Parsed[HasError] then error Error.Record("DataFormat.Error", queryName & ": an iTop date/time value is invalid.", "Expected yyyy-MM-dd HH:mm:ss from the non-localized CSV export.") else Parsed[Value];
+
+shared UserRequestFields = {
+    "id", "operational_status", "status", "ref", "org_id", "org_name", "caller_id", "caller_name", "team_id", "team_id_friendlyname",
+    "agent_id", "agent_name", "impact", "urgency", "priority", "origin", "request_type", "start_date", "end_date", "last_update",
+    "assignment_date", "resolution_date", "last_pending_date", "sla_tto_passed", "sla_ttr_passed", "time_spent", "resolution_code",
+    "tto_escalation_deadline", "ttr_escalation_deadline", "service_name"
+};
+
+shared UserRequestOutputFields = {
+    "id (Primary Key)", "Operational status", "Status", "Ref", "Organization", "Organization Name", "Caller", "Caller Name", "Team", "Team_Name",
+    "Agent", "Agent Name", "Impact", "Urgency", "Priority", "Origin", "Request Type", "Start date (date)", "Start date (time)", "End date (date)",
+    "End date (time)", "Last update (date)", "Last update (time)", "Assignment date (date)", "Assignment date (time)", "Resolution date (date)",
+    "Resolution date (time)", "Last pending date (date)", "Last pending date (time)", "SLA tto passed", "SLA ttr passed", "Resolution delay",
+    "Resolution code", "TTO Deadline", "TTR Deadline", "Service name"
+};
+
+shared ShapeUserRequest = (queryName as text, data as table) as table => let
+    Validated = RequireColumns(queryName, data, UserRequestFields),
+    DateMappings = {{"start_date", "Start date"}, {"end_date", "End date"}, {"last_update", "Last update"}, {"assignment_date", "Assignment date"}, {"resolution_date", "Resolution date"}, {"last_pending_date", "Last pending date"}},
+    DateFields = List.Transform(DateMappings, each _{0}),
+    TextFields = List.RemoveItems(UserRequestFields, List.Combine({DateFields, {"time_spent", "tto_escalation_deadline", "ttr_escalation_deadline"}})),
+    TextTransforms = List.Transform(TextFields, (field) => {field, (value) => if value = null then null else Text.From(value), type text}),
+    Typed = Table.TransformColumns(Validated, List.Combine({TextTransforms, {{"time_spent", (value) => if value = null or Text.Trim(Text.From(value)) = "" then 0 else Int64.From(value), Int64.Type}, {"tto_escalation_deadline", (value) => ParseITopDateTime(queryName, value), type datetime}, {"ttr_escalation_deadline", (value) => ParseITopDateTime(queryName, value), type datetime}}})),
+    WithDateParts = List.Accumulate(DateMappings, Typed, (state, mapping) => let DateColumn = Table.AddColumn(state, mapping{1} & " (date)", each let parsed = ParseITopDateTime(queryName, Record.Field(_, mapping{0})) in if parsed = null then null else Date.From(parsed), type date), TimeColumn = Table.AddColumn(DateColumn, mapping{1} & " (time)", each let parsed = ParseITopDateTime(queryName, Record.Field(_, mapping{0})) in if parsed = null then null else Time.From(parsed), type time) in TimeColumn),
+    WithoutCombinedDates = Table.RemoveColumns(WithDateParts, DateFields),
+    Renamed = Table.RenameColumns(WithoutCombinedDates, {{"id", "id (Primary Key)"}, {"operational_status", "Operational status"}, {"status", "Status"}, {"ref", "Ref"}, {"org_id", "Organization"}, {"org_name", "Organization Name"}, {"caller_id", "Caller"}, {"caller_name", "Caller Name"}, {"team_id", "Team"}, {"team_id_friendlyname", "Team_Name"}, {"agent_id", "Agent"}, {"agent_name", "Agent Name"}, {"impact", "Impact"}, {"urgency", "Urgency"}, {"priority", "Priority"}, {"origin", "Origin"}, {"request_type", "Request Type"}, {"sla_tto_passed", "SLA tto passed"}, {"sla_ttr_passed", "SLA ttr passed"}, {"time_spent", "Resolution delay"}, {"resolution_code", "Resolution code"}, {"tto_escalation_deadline", "TTO Deadline"}, {"ttr_escalation_deadline", "TTR Deadline"}, {"service_name", "Service name"}})
+in
+    Table.ReorderColumns(Renamed, UserRequestOutputFields);
+
+shared ShapeTeamList = (queryName as text, data as table) as table => let
+    Validated = RequireColumns(queryName, data, {"id", "name"}),
+    Typed = Table.TransformColumns(Validated, {{"id", each Int64.From(_), Int64.Type}, {"name", each if _ = null then null else Text.From(_), type text}}),
+    Renamed = Table.RenameColumns(Typed, {{"id", "id (Primary Key)"}, {"name", "Name"}})
+in
+    Table.ReorderColumns(Renamed, {"id (Primary Key)", "Name"});
+
+shared ShapeFirstTeam = (queryName as text, data as table) as table => let
+    Validated = RequireColumns(queryName, data, {"newvalue", "objkey"}),
+    Typed = Table.TransformColumns(Validated, {{"newvalue", each Int64.From(_), Int64.Type}, {"objkey", each Int64.From(_), Int64.Type}}),
+    Renamed = Table.RenameColumns(Typed, {{"newvalue", "FirstTeam_affected_id"}, {"objkey", "UserRequest_id"}}),
+    Ordered = Table.ReorderColumns(Renamed, {"FirstTeam_affected_id", "UserRequest_id"})
+in
+    Table.Distinct(Ordered, {"UserRequest_id"});
+
+shared EmptyFirstTeam = () as table => #table(type table [FirstTeam_affected_id = Int64.Type, UserRequest_id = Int64.Type], {});
+
+shared UserRequest = ShapeUserRequest("UserRequest", FetchQueryCsv("UserRequest", url_user_request_itop, user_login, user_password));
+
+shared UserRequest_Period = ShapeUserRequest("UserRequest_Period", FetchQueryCsv("UserRequest_Period", url_user_request_itop, user_login, user_password));
+
+shared TeamList = ShapeTeamList("TeamList", FetchQueryCsv("TeamList", url_list_team_name_itop, user_login, user_password));
+
+shared Requête1 = (StartDate as date, EndDate as date, optional Culture as nullable text) as table =>
+
+let
+    DayCount = Duration.Days(Duration.From(EndDate - StartDate)) + 1,
+    Source = List.Dates(StartDate,DayCount,#duration(1,0,0,0)),
+    TableFromList = Table.FromList(Source, Splitter.SplitByNothing()),    
+    ChangedType = Table.TransformColumnTypes(TableFromList,{{"Column1", type date}}),
+    RenamedColumns = Table.RenameColumns(ChangedType,{{"Column1", "Date"}}),
+    InsertYearKey = Table.AddColumn(RenamedColumns, "YearKey", each Date.Year([Date])),
+    InsertYear = Table.AddColumn(InsertYearKey, "Year", each (Number.ToText([YearKey])), type text),
+    InsertQuarterKey = Table.AddColumn(InsertYear, "QuarterKey", each (([YearKey] * 10) + Date.QuarterOfYear([Date]))),
+    InsertQuarter = Table.AddColumn(InsertQuarterKey, "Quarter", each (Number.ToText([YearKey]) & "-Q" & Number.ToText(Date.QuarterOfYear([Date]))), type text),
+    InsertMonthKey = Table.AddColumn(InsertQuarter, "MonthKey", each (([YearKey] * 100) + Date.Month([Date]))),
+    InsertMonth = Table.AddColumn(InsertMonthKey, "Month", each (Number.ToText([YearKey]) & "-" & Date.ToText([Date], "MMM", Culture)), type text),
+    InsertDateKey = Table.AddColumn(InsertMonth, "DateKey", each (([YearKey] * 10000) + (Date.Month([Date]) * 100) + Date.Day([Date]))),
+    InsertDay = Table.AddColumn(InsertDateKey, "Day", each Date.ToText([Date], "yyyy-MMM-dd", Culture), type text),
+    SetNumericColumns = Table.TransformColumnTypes(InsertDay, {{"DateKey", Int64.Type}, {"MonthKey", Int64.Type}, {"QuarterKey", Int64.Type}, {"YearKey", Int64.Type}}),
+    DateTable = Table.ReorderColumns(SetNumericColumns, {"DateKey", "Date", "Day", "MonthKey", "Month", "QuarterKey", "Quarter", "YearKey", "Year"})
+  in
+    DateTable;
+
+shared Calendrier_ResolutionDate = let
+    Source = Requête1(#date(2021, 1, 1), Date.EndOfYear(Date.From(DateTime.FixedLocalNow())), null)
+in
+    Source;
+
+shared Calendrier = let
+    Source = Requête1(#date(2021, 1, 1), Date.EndOfYear(Date.From(DateTime.FixedLocalNow())), null)
+in
+    Source;
+
+shared Mesures = let
+    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Colonne 1" = _t]),
+    #"Type modifié" = Table.TransformColumnTypes(Source,{{"Colonne 1", type text}}),
+    #"Colonnes supprimées" = Table.RemoveColumns(#"Type modifié",{"Colonne 1"})
+in
+    #"Colonnes supprimées";
+
+shared TableMesures = let
+    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Colonne 1" = _t]),
+    #"Type modifié" = Table.TransformColumnTypes(Source,{{"Colonne 1", type text}}),
+    #"Colonnes supprimées" = Table.RemoveColumns(#"Type modifié",{"Colonne 1"})
+in
+    #"Colonnes supprimées";
+
+shared FirstTeam_Affected = let OptionalUrl = if url_list_first_team_dispatched_itop = null then "" else Text.Trim(url_list_first_team_dispatched_itop) in if OptionalUrl = "" then EmptyFirstTeam() else ShapeFirstTeam("FirstTeam_Affected", FetchQueryCsv("FirstTeam_Affected", OptionalUrl, user_login, user_password));
+
+[ Description = "iTop user login" ]
+shared user_login = null meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true];
+
+[ Description = "iTop user password" ]
+shared user_password = null meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true];
+
+[ Description = "URL of iTop query#(lf)PowerBI - Integration - User Requests updated over the last 12 months" ]
+shared url_user_request_itop = null meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true];
+
+[ Description = "URL of iTop query#(lf)PowerBI - Integration - List teams' name - Combodo" ]
+shared url_list_team_name_itop = null meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true];
+
+[ Description = "URL of iTop query#(lf)PowerBI - Integration - List the first teams dispatched on Tickets updated over the last 12 months - Combodo" ]
+shared url_list_first_team_dispatched_itop = null meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=false];
