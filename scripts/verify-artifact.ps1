@@ -103,7 +103,7 @@ try {
 		if ($artifactExpressions.Count -ne 1 -or -not $sourceMatch.Success) { throw "PBIT model expression is missing or duplicated: $name" }
 		if ((Normalize-Expression $artifactExpressions[0].expression) -cne (Normalize-Expression $sourceMatch.Groups[1].Value)) { throw "PBIT model expression differs from source: $name" }
 	}
-	foreach ($tableName in @('UserRequest','UserRequest_Period','TeamList','FirstTeam_Affected')) {
+	foreach ($tableName in @('UserRequest','UserRequest_Period','TeamList','FirstTeam_Affected','Calendrier','Calendrier_ResolutionDate')) {
 		$artifactTables = @($model.model.tables | Where-Object name -ceq $tableName)
 		$tableSource = [System.IO.File]::ReadAllText((Join-Path $project "Model/tables/$tableName.tmdl"))
 		$sourceMatch = [regex]::Match($tableSource, '(?ms)^\tpartition .+? = m\s+mode: import\s+source =\s*(.*?)(?=^\tannotation |\z)')

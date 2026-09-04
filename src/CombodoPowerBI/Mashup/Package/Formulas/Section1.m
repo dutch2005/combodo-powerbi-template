@@ -5,11 +5,26 @@ shared BuildExportUrl = (queryName as text, queryUrl as nullable text) as text =
     ValidUrl = if Trimmed = "" then error Error.Record("Configuration.Error", queryName & ": query URL is blank.", "Copy the Query Phrasebook export URL from iTop.") else Trimmed,
     Parts = Uri.Parts(ValidUrl),
     Existing = Record.ToTable(Record.FieldOrDefault(Parts, "Query", [])),
-    Kept = Table.SelectRows(Existing, each not List.Contains({"format", "no_localize", "date_format", "charset", "separator"}, Text.Lower([Name]))),
-    Required = #table({"Name", "Value"}, {{"format", "csv"}, {"no_localize", "1"}, {"date_format", "Y-m-d H:i:s"}, {"charset", "UTF-8"}, {"separator", ","}}),
-    Query = Uri.BuildQueryString(Record.FromTable(Table.Combine({Kept, Required}))),
-    WithoutFragment = Text.BeforeDelimiter(ValidUrl & "#", "#"),
-    Base = Text.BeforeDelimiter(WithoutFragment & "?", "?")
+    GetValue = (name as text) as nullable text => let Matches = Table.SelectRows(Existing, each Text.Lower(Text.From([Name])) = Text.Lower(name)) in if Table.IsEmpty(Matches) then null else Text.From(Matches{0}[Value]),
+    Path = Text.From(Record.FieldOrDefault(Parts, "Path", "")),
+    GuiSuffix = "/pages/UI.php",
+    IsGuiUrl = Text.EndsWith(Text.Lower(Path), Text.Lower(GuiSuffix)),
+    GuiClass = GetValue("class"),
+    GuiId = GetValue("id"),
+    DirectId = GetValue("query"),
+    QueryValue = if IsGuiUrl then GuiId else DirectId,
+    ValidGuiUrl = not IsGuiUrl or (GuiClass <> null and Text.Lower(GuiClass) = "queryoql" and GuiId <> null and Text.Trim(GuiId) <> ""),
+    CheckedGuiUrl = if ValidGuiUrl then ValidUrl else error Error.Record("Configuration.Error", queryName & ": the iTop GUI URL does not identify a QueryOQL record.", "Open the QueryOQL details page or copy its export-v2 URL."),
+    CheckedUrl = if QueryValue <> null and Text.Trim(QueryValue) <> "" then CheckedGuiUrl else error Error.Record("Configuration.Error", queryName & ": the iTop URL does not contain a saved query id.", "Open the QueryOQL details page or copy its export-v2 URL."),
+    Overridden = {"format", "login_mode", "no_localize", "date_format", "charset", "separator", "query"},
+    GuiOnly = if IsGuiUrl then {"operation", "class", "id"} else {},
+    Kept = Table.SelectRows(Existing, each not List.Contains(List.Combine({Overridden, GuiOnly}), Text.Lower(Text.From([Name])))),
+    QueryId = #table({"Name", "Value"}, {{"query", Text.Trim(QueryValue)}}),
+    Required = #table({"Name", "Value"}, {{"format", "csv"}, {"login_mode", "basic"}, {"no_localize", "1"}, {"date_format", "Y-m-d H:i:s"}, {"charset", "UTF-8"}, {"separator", ","}}),
+    Query = Uri.BuildQueryString(Record.FromTable(Table.Combine({Kept, QueryId, Required}))),
+    WithoutFragment = Text.BeforeDelimiter(CheckedUrl & "#", "#"),
+    OriginalBase = Text.BeforeDelimiter(WithoutFragment & "?", "?"),
+    Base = if IsGuiUrl then Text.Start(OriginalBase, Text.Length(OriginalBase) - Text.Length(GuiSuffix)) & "/webservices/export-v2.php" else OriginalBase
 in
     Base & "?" & Query;
 
@@ -119,12 +134,12 @@ let
     DateTable;
 
 shared Calendrier_ResolutionDate = let
-    Source = Requête1(#date(2021, 1, 1), #date(2024, 12, 31), null)
+    Source = Requête1(#date(2021, 1, 1), Date.EndOfYear(Date.From(DateTime.FixedLocalNow())), null)
 in
     Source;
 
 shared Calendrier = let
-    Source = Requête1(#date(2021, 1, 1), #date(2024, 12, 31), null)
+    Source = Requête1(#date(2021, 1, 1), Date.EndOfYear(Date.From(DateTime.FixedLocalNow())), null)
 in
     Source;
 

@@ -5,13 +5,15 @@ This repository contains the source and release template for the iTop Helpdesk P
 ## Install version 1.1.0
 
 1. Install **Reporting for PowerBI - Helpdesk view 1.1.0** in iTop first.
-2. In iTop, open the Query Phrasebook and copy the export URLs for:
+2. In iTop, open the Query Phrasebook and copy either the QueryOQL details URLs or the `export-v2.php` URLs for:
    - PowerBI - Integration - User Requests updated over the last 12 months
    - PowerBI - Integration - List teams' name - Combodo
    - PowerBI - Integration - List the first teams dispatched on Tickets updated over the last 12 months - Combodo (optional)
 3. Open `artifacts/Combodo_PowerBI_Reporting_Template_1.1.0.pbit` in Power BI Desktop.
 4. Enter the three URLs plus the iTop login and password when prompted.
 5. When Power BI asks for web data-source credentials, select **Anonymous**. The template supplies the Basic authorization header itself.
+
+For a details URL such as `/pages/UI.php?operation=details&class=QueryOQL&id=26`, the template automatically calls `/webservices/export-v2.php?...&query=26`. Existing export URLs remain supported. Both calendar tables extend from 2021 through the end of the current year at each refresh.
 
 Treat 1.1.0 as a replacement template rather than an in-place conversion of a customized 1.0.x report. Reapply any private report customizations to a copy of 1.1.0.
 
@@ -23,7 +25,8 @@ This path works the same for every iTop-supported left-to-right account language
 
 ## Troubleshooting
 
-- **HTML instead of CSV:** the URL may point to a login or error page. Recopy the Query Phrasebook URL and verify the account credentials and export permission.
+- **Invalid QueryOQL URL:** use either a QueryOQL details URL containing its `id` or an `export-v2.php` URL containing its `query` id.
+- **HTML instead of CSV:** verify the account credentials and export permission; the response may be a login or error page.
 - **HTTP error:** verify the iTop URL, saved-query identifier, access rights, and credentials.
 - **Missing internal fields:** install extension 1.1.0 and make sure the URL points to its matching Query Phrasebook entry.
 - **Malformed CSV or date/time:** verify that the response has not been rewritten by a proxy and that the URL is the original iTop export URL.

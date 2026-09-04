@@ -151,7 +151,7 @@
 		mode: import
 		source =
 				let
-				    Source = Requête1(#date(2021, 1, 1), #date(2024, 12, 31), null)
+				    Source = Requête1(#date(2021, 1, 1), Date.EndOfYear(Date.From(DateTime.FixedLocalNow())), null)
 				in
 				    Source
 

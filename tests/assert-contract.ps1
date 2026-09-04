@@ -71,6 +71,12 @@ $allQuerySource = $mSource + "`n" + $modelQuerySource
 foreach ($token in @('BuildExportUrl','FetchQueryCsv','RequireColumns','ShapeUserRequest','format','csv','no_localize','date_format','Y-m-d H:i:s','charset','UTF-8','Error.Record')) {
 	Assert-Contract ($mSource.Contains($token) -and $modelQuerySource.Contains($token)) "Mashup and model query sources are not synchronized for $token."
 }
+foreach ($token in @('/pages/UI.php','QueryOQL','/webservices/export-v2.php','login_mode','basic','query')) {
+	Assert-Contract ($mSource.Contains($token) -and $modelQuerySource.Contains($token)) "GUI-to-export URL conversion is not synchronized for $token."
+}
+foreach ($flow in @('DirectId = GetValue("query")','QueryValue = if IsGuiUrl then GuiId else DirectId','WithoutFragment = Text.BeforeDelimiter(CheckedUrl')) {
+	Assert-Contract ($mSource.Contains($flow) -and $modelQuerySource.Contains($flow)) "URL conversion flow is incomplete: $flow."
+}
 Assert-Contract (-not $allQuerySource.Contains('Web.Page')) 'Power Query must not parse locale-sensitive HTML tables with Web.Page.'
 Assert-Contract (-not $allQuerySource.Contains('ManualStatusHandling')) 'Unsupported custom-connector status overrides must not be used.'
 Assert-Contract ($allQuerySource.Contains('Table.SelectColumns(data, required)')) 'Validated input must be projected to the exact required schema.'
@@ -82,6 +88,13 @@ Assert-Contract (-not $mashupMetadata.Contains('Web.Page')) 'Mashup metadata con
 foreach ($legacyPattern in @('\{\{"Ref",\s*type text','\{\{"id \(Primary Key\)"','\{\{"New value"','\{\{"object id"')) {
 	Assert-Contract (-not [regex]::IsMatch($allQuerySource, $legacyPattern)) "Power Query still treats a localized display header as source schema: $legacyPattern"
 }
+
+$calendarSources = @(
+	Get-Content -Raw -LiteralPath (Join-Path $root 'src/CombodoPowerBI/Model/tables/Calendrier.tmdl')
+	Get-Content -Raw -LiteralPath (Join-Path $root 'src/CombodoPowerBI/Model/tables/Calendrier_ResolutionDate.tmdl')
+) -join "`n"
+Assert-Contract (-not ($mSource + $calendarSources).Contains('#date(2024, 12, 31)')) 'Calendar tables still expire at the end of 2024.'
+Assert-Contract (([regex]::Matches($mSource + $calendarSources, 'Date\.EndOfYear\(Date\.From\(DateTime\.FixedLocalNow\(\)\)\)')).Count -eq 4) 'Both Mashup and model calendars must end dynamically at the current year.'
 
 foreach ($errorFixture in @('login.html','invalid-query.html','missing-fields.csv','extra-fields.csv','empty-user-request.csv','empty-team-list.csv')) {
 	Assert-Contract (Test-Path -LiteralPath (Join-Path $root "tests/fixtures/errors/$errorFixture") -PathType Leaf) "Missing error fixture $errorFixture."
