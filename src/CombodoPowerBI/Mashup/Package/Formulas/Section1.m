@@ -1,46 +1,87 @@
 section Section1;
 
-shared UserRequest = let
-    #"UserName"=user_login,
-    #"Password"=user_password,
-    #"Header" = Binary.ToText(Text.ToBinary(#"UserName"&":" & #"Password")),
-    #"BaseURL" = url_user_request_itop,
-    Source = Web.Page(Web.Contents(#"BaseURL", [Headers=[Authorization="Basic " & #"Header"]])),
-    Data0 = Source{0}[Data],
-    #"En-têtes promus" = Table.PromoteHeaders(Data0, [PromoteAllScalars=true]),
-     #"Type modifié" = Table.TransformColumnTypes(#"En-têtes promus",{{"Ref", type text}}),
-     #"Type modifié1" = Table.TransformColumnTypes(#"Type modifié",{{"Resolution date (date)", type date}, {"Assignment date (date)", type date}, {"Start date (date)", type date}, {"Start date (time)", type time}, {"End date (date)", type date}, {"End date (time)", type time}, {"Last update (date)", type date}, {"Last update (time)", type time}, {"Assignment date (time)", type time}, {"Resolution date (time)", type time}, {"Last pending date (date)", type date}, {"Last pending date (time)", type time}, {"TTO Deadline", type datetime}, {"TTR Deadline", type datetime}, {"Resolution delay", Int64.Type}}),
-    #"Colonnes renommées" = Table.RenameColumns(#"Type modifié1",{{"Team_1", "Team_Name"}}),
-    #"Valeur remplacée" = Table.ReplaceValue(#"Colonnes renommées",null,0,Replacer.ReplaceValue,{"Resolution delay"})
+shared BuildExportUrl = (queryName as text, queryUrl as nullable text) as text => let
+    Trimmed = if queryUrl = null then "" else Text.Trim(queryUrl),
+    ValidUrl = if Trimmed = "" then error Error.Record("Configuration.Error", queryName & ": query URL is blank.", "Copy the Query Phrasebook export URL from iTop.") else Trimmed,
+    Parts = Uri.Parts(ValidUrl),
+    Existing = Record.ToTable(Record.FieldOrDefault(Parts, "Query", [])),
+    Kept = Table.SelectRows(Existing, each not List.Contains({"format", "no_localize", "date_format", "charset", "separator"}, Text.Lower([Name]))),
+    Required = #table({"Name", "Value"}, {{"format", "csv"}, {"no_localize", "1"}, {"date_format", "Y-m-d H:i:s"}, {"charset", "UTF-8"}, {"separator", ","}}),
+    Query = Uri.BuildQueryString(Record.FromTable(Table.Combine({Kept, Required}))),
+    WithoutFragment = Text.BeforeDelimiter(ValidUrl & "#", "#"),
+    Base = Text.BeforeDelimiter(WithoutFragment & "?", "?")
 in
-    #"Valeur remplacée";
+    Base & "?" & Query;
 
-shared UserRequest_Period = let
-    #"UserName"=user_login,
-    #"Password"=user_password,
-    #"Header" = Binary.ToText(Text.ToBinary(#"UserName"&":" & #"Password")),
-    #"BaseURL" = url_user_request_itop,
-    Source = Web.Page(Web.Contents(#"BaseURL", [Headers=[Authorization="Basic " & #"Header"]])),
-    Data0 = Source{0}[Data],
-    #"En-têtes promus" = Table.PromoteHeaders(Data0, [PromoteAllScalars=true]),
-     #"Type modifié" = Table.TransformColumnTypes(#"En-têtes promus",{{"Ref", type text}}),
-     #"Type modifié1" = Table.TransformColumnTypes(#"Type modifié",{{"Resolution date (date)", type date}, {"Assignment date (date)", type date}, {"Start date (date)", type date}, {"Start date (time)", type time}, {"End date (date)", type date}, {"End date (time)", type time}, {"Last update (date)", type date}, {"Last update (time)", type time}, {"Assignment date (time)", type time}, {"Resolution date (time)", type time}, {"Last pending date (date)", type date}, {"Last pending date (time)", type time}, {"TTO Deadline", type datetime}, {"TTR Deadline", type datetime}, {"Resolution delay", Int64.Type}}),
-    #"Colonnes renommées" = Table.RenameColumns(#"Type modifié1",{{"Team_1", "Team_Name"}}),
-    #"Valeur remplacée" = Table.ReplaceValue(#"Colonnes renommées",null,0,Replacer.ReplaceValue,{"Resolution delay"})
+shared FetchQueryCsv = (queryName as text, queryUrl as nullable text, login as nullable text, password as nullable text) as table => let
+    User = if login = null then "" else Text.Trim(login),
+    Secret = if password = null then "" else Text.From(password),
+    Credentials = if User = "" or Text.Trim(Secret) = "" then error Error.Record("Configuration.Error", queryName & ": login or password is blank.", "Enter both iTop credentials in the template parameters.") else [User = User, Secret = Secret],
+    Authorization = "Basic " & Binary.ToText(Text.ToBinary(Credentials[User] & ":" & Credentials[Secret], TextEncoding.Utf8), BinaryEncoding.Base64),
+    Response = Binary.Buffer(Web.Contents(BuildExportUrl(queryName, queryUrl), [Headers = [Authorization = Authorization, Accept = "text/csv"], ManualStatusHandling = {400, 401, 403, 404, 405, 408, 409, 410, 422, 429, 500, 502, 503, 504}])),
+    Metadata = Value.Metadata(Response),
+    Status = Number.From(Record.FieldOrDefault(Metadata, "Response.Status", 200)),
+    Headers = Record.FieldOrDefault(Metadata, "Headers", []),
+    ContentType = Text.Lower(Text.From(Record.FieldOrDefault(Headers, "Content-Type", Record.FieldOrDefault(Headers, "content-type", "")))),
+    PreviewAttempt = try Text.Lower(Text.TrimStart(Text.FromBinary(Binary.Range(Response, 0, Number.Min({Binary.Length(Response), 256})), TextEncoding.Utf8))),
+    Preview = if PreviewAttempt[HasError] then "" else PreviewAttempt[Value],
+    IsHtml = Text.Contains(ContentType, "text/html") or Text.StartsWith(Preview, "<!doctype html") or Text.StartsWith(Preview, "<html") or Text.Contains(Preview, "<form"),
+    ValidResponse = if Status >= 400 then error Error.Record("DataSource.Error", queryName & ": iTop returned HTTP " & Text.From(Status) & ".", "Verify the Query Phrasebook URL, access rights, and credentials.") else if IsHtml then error Error.Record("DataSource.Error", queryName & ": iTop returned HTML instead of CSV.", "Verify the Query Phrasebook URL and credentials; the response may be a login or error page.") else Response,
+    ParsedAttempt = try Table.PromoteHeaders(Csv.Document(ValidResponse, [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv, ExtraValues = ExtraValues.Error]), [PromoteAllScalars = true]),
+    Parsed = if ParsedAttempt[HasError] then error Error.Record("DataFormat.Error", queryName & ": iTop returned malformed CSV.", "Export the saved query as CSV and verify its response.") else ParsedAttempt[Value]
 in
-    #"Valeur remplacée";
+    Parsed;
+
+shared RequireColumns = (queryName as text, data as table, required as list) as table => let
+    Missing = List.Difference(required, Table.ColumnNames(data), Comparer.Ordinal),
+    Checked = if List.IsEmpty(Missing) then data else error Error.Record("Schema.Error", queryName & ": required iTop fields are missing: " & Text.Combine(Missing, ", ") & ".", "Verify the Query Phrasebook URL, extension version, access rights, and credentials.")
+in
+    Checked;
+
+shared ParseITopDateTime = (queryName as text, value as any) as nullable datetime => let
+    TextValue = if value = null then "" else Text.Trim(Text.From(value)),
+    Parsed = try DateTime.FromText(Text.Replace(TextValue, " ", "T"), [Format = "yyyy-MM-ddTHH:mm:ss", Culture = "en-US"])
+in
+    if TextValue = "" then null else if Parsed[HasError] then error Error.Record("DataFormat.Error", queryName & ": an iTop date/time value is invalid.", "Expected yyyy-MM-dd HH:mm:ss from the non-localized CSV export.") else Parsed[Value];
+
+shared UserRequestFields = {
+    "id", "operational_status", "status", "ref", "org_id", "org_name", "caller_id", "caller_name", "team_id", "team_id_friendlyname",
+    "agent_id", "agent_name", "impact", "urgency", "priority", "origin", "request_type", "start_date", "end_date", "last_update",
+    "assignment_date", "resolution_date", "last_pending_date", "sla_tto_passed", "sla_ttr_passed", "time_spent", "resolution_code",
+    "tto_escalation_deadline", "ttr_escalation_deadline", "service_name"
+};
+
+shared UserRequestOutputFields = {
+    "id (Primary Key)", "Operational status", "Status", "Ref", "Organization", "Organization Name", "Caller", "Caller Name", "Team", "Team_Name",
+    "Agent", "Agent Name", "Impact", "Urgency", "Priority", "Origin", "Request Type", "Start date (date)", "Start date (time)", "End date (date)",
+    "End date (time)", "Last update (date)", "Last update (time)", "Assignment date (date)", "Assignment date (time)", "Resolution date (date)",
+    "Resolution date (time)", "Last pending date (date)", "Last pending date (time)", "SLA tto passed", "SLA ttr passed", "Resolution delay",
+    "Resolution code", "TTO Deadline", "TTR Deadline", "Service name"
+};
+
+shared ShapeUserRequest = (queryName as text, data as table) as table => let
+    Validated = RequireColumns(queryName, data, UserRequestFields),
+    DateMappings = {{"start_date", "Start date"}, {"end_date", "End date"}, {"last_update", "Last update"}, {"assignment_date", "Assignment date"}, {"resolution_date", "Resolution date"}, {"last_pending_date", "Last pending date"}},
+    DateFields = List.Transform(DateMappings, each _{0}),
+    TextFields = List.RemoveItems(UserRequestFields, List.Combine({DateFields, {"time_spent", "tto_escalation_deadline", "ttr_escalation_deadline"}})),
+    TextTransforms = List.Transform(TextFields, (field) => {field, (value) => if value = null then null else Text.From(value), type text}),
+    Typed = Table.TransformColumns(Validated, List.Combine({TextTransforms, {{"time_spent", (value) => if value = null or Text.Trim(Text.From(value)) = "" then 0 else Int64.From(value), Int64.Type}, {"tto_escalation_deadline", (value) => ParseITopDateTime(queryName, value), type datetime}, {"ttr_escalation_deadline", (value) => ParseITopDateTime(queryName, value), type datetime}}})),
+    WithDateParts = List.Accumulate(DateMappings, Typed, (state, mapping) => let DateColumn = Table.AddColumn(state, mapping{1} & " (date)", each let parsed = ParseITopDateTime(queryName, Record.Field(_, mapping{0})) in if parsed = null then null else Date.From(parsed), type date), TimeColumn = Table.AddColumn(DateColumn, mapping{1} & " (time)", each let parsed = ParseITopDateTime(queryName, Record.Field(_, mapping{0})) in if parsed = null then null else Time.From(parsed), type time) in TimeColumn),
+    WithoutCombinedDates = Table.RemoveColumns(WithDateParts, DateFields),
+    Renamed = Table.RenameColumns(WithoutCombinedDates, {{"id", "id (Primary Key)"}, {"operational_status", "Operational status"}, {"status", "Status"}, {"ref", "Ref"}, {"org_id", "Organization"}, {"org_name", "Organization Name"}, {"caller_id", "Caller"}, {"caller_name", "Caller Name"}, {"team_id", "Team"}, {"team_id_friendlyname", "Team_Name"}, {"agent_id", "Agent"}, {"agent_name", "Agent Name"}, {"impact", "Impact"}, {"urgency", "Urgency"}, {"priority", "Priority"}, {"origin", "Origin"}, {"request_type", "Request Type"}, {"sla_tto_passed", "SLA tto passed"}, {"sla_ttr_passed", "SLA ttr passed"}, {"time_spent", "Resolution delay"}, {"resolution_code", "Resolution code"}, {"tto_escalation_deadline", "TTO Deadline"}, {"ttr_escalation_deadline", "TTR Deadline"}, {"service_name", "Service name"}})
+in
+    Table.ReorderColumns(Renamed, UserRequestOutputFields);
+
+shared UserRequest = ShapeUserRequest("UserRequest", FetchQueryCsv("UserRequest", url_user_request_itop, user_login, user_password));
+
+shared UserRequest_Period = ShapeUserRequest("UserRequest_Period", FetchQueryCsv("UserRequest_Period", url_user_request_itop, user_login, user_password));
 
 shared TeamList = let
-    #"UserName" = user_login,
-    #"Password" = user_password,
-    #"Header" = Binary.ToText(Text.ToBinary(#"UserName"&":" & #"Password")),
-    #"BaseURL" = url_list_team_name_itop,
-    Source = Web.Page(Web.Contents(#"BaseURL", [Headers=[Authorization="Basic " & #"Header"]])),
-    Data0 = Source{0}[Data],
-    #"En-têtes promus" = Table.PromoteHeaders(Data0, [PromoteAllScalars=true]),
-    #"Type modifié" = Table.TransformColumnTypes(#"En-têtes promus",{{"id (Primary Key)", Int64.Type}, {"Name", type text}})
+    Validated = RequireColumns("TeamList", FetchQueryCsv("TeamList", url_list_team_name_itop, user_login, user_password), {"id", "name"}),
+    Typed = Table.TransformColumns(Validated, {{"id", each Int64.From(_), Int64.Type}, {"name", each if _ = null then null else Text.From(_), type text}}),
+    Renamed = Table.RenameColumns(Typed, {{"id", "id (Primary Key)"}, {"name", "Name"}})
 in
-    #"Type modifié";
+    Table.ReorderColumns(Renamed, {"id (Primary Key)", "Name"});
 
 shared Requête1 = (StartDate as date, EndDate as date, optional Culture as nullable text) as table =>
 
@@ -88,34 +129,17 @@ in
     #"Colonnes supprimées";
 
 shared FirstTeam_Affected = let
-    FirstTeam_Affected_Init = if url_list_first_team_dispatched_itop <> null
-    then { let    
-    #"UserName"=user_login,
-    #"Password"=user_password,
-    #"Header" = Binary.ToText(Text.ToBinary(#"UserName"&":" & #"Password")),
-    #"BaseURL" = url_list_first_team_dispatched_itop, 
-    Source = Web.Page(Web.Contents(#"BaseURL", [Headers=[Authorization="Basic " & #"Header"]])),
-    Data0 = Source{0}[Data],
-    #"En-têtes promus" = Table.PromoteHeaders(Data0, [PromoteAllScalars=true]),
-    #"Type modifié" = Table.TransformColumnTypes(#"En-têtes promus",{{"New value", Int64.Type}, {"object id", Int64.Type}}),
-    #"Colonnes renommées" = Table.RenameColumns(#"Type modifié",{{"New value", "FirstTeam_affected_id"}, {"object id", "UserRequest_id"}}),
-    #"Userrequest unique" = Table.Distinct(#"Colonnes renommées","UserRequest_id")
+    OptionalUrl = if url_list_first_team_dispatched_itop = null then "" else Text.Trim(url_list_first_team_dispatched_itop),
+    Empty = #table(type table [FirstTeam_affected_id = Int64.Type, UserRequest_id = Int64.Type], {}),
+    Result = if OptionalUrl = "" then Empty else let
+        Validated = RequireColumns("FirstTeam_Affected", FetchQueryCsv("FirstTeam_Affected", OptionalUrl, user_login, user_password), {"newvalue", "objkey"}),
+        Typed = Table.TransformColumns(Validated, {{"newvalue", each Int64.From(_), Int64.Type}, {"objkey", each Int64.From(_), Int64.Type}}),
+        Renamed = Table.RenameColumns(Typed, {{"newvalue", "FirstTeam_affected_id"}, {"objkey", "UserRequest_id"}}),
+        Ordered = Table.ReorderColumns(Renamed, {"FirstTeam_affected_id", "UserRequest_id"})
     in
-    #"Userrequest unique"
-    }
-    else { let
-    Source = #table(  
-    type table [UserRequest_id = Int64.Type, FirstTeam_affected_id = Int64.Type],   
-        {   
-              {1, 1}
-        }  
-    )  
-    in
-    Source
-    },
-    FirstTeam_Affected = FirstTeam_Affected_Init{0}
+        Table.Distinct(Ordered, {"UserRequest_id"})
 in
-    FirstTeam_Affected;
+    Result;
 
 [ Description = "iTop user login" ]
 shared user_login = null meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true];

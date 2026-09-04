@@ -53,7 +53,7 @@ if (Test-Path -LiteralPath $schemaPath -PathType Leaf) {
 
 $mPath = Join-Path $root 'src/CombodoPowerBI/Mashup/Package/Formulas/Section1.m'
 $mSource = Get-Content -Raw -LiteralPath $mPath
-foreach ($token in @('BuildExportUrl','FetchQueryCsv','RequireColumns','ShapeUserRequest','format','csv','no_localize','Error.Record')) {
+foreach ($token in @('BuildExportUrl','FetchQueryCsv','RequireColumns','ShapeUserRequest','format','csv','no_localize','date_format','Y-m-d H:i:s','charset','UTF-8','Error.Record')) {
 	Assert-Contract ($mSource.Contains($token)) "Power Query source is missing $token."
 }
 Assert-Contract (-not $mSource.Contains('Web.Page')) 'Power Query must not parse locale-sensitive HTML tables with Web.Page.'
