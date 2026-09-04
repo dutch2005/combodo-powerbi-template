@@ -44,6 +44,14 @@ Run the static locale and preservation gates:
 ./tests/assert-model-parity.ps1
 ```
 
+Execute the production `BuildExportUrl` function in Microsoft's Power Query test runtime and scan the source-bound PBIT for populated parameters, cached data, or environment-specific personal data:
+
+```powershell
+$pqTest = ./scripts/prepare-pqtest.ps1
+./tests/RunPowerQueryTests.ps1 -PqTestExe $pqTest
+./tests/assert-no-personal-data.ps1
+```
+
 Run portable archive verification. It checks unique non-empty PBIT entries, the committed checksum, embedded Mashup and model expressions against source, and the 10-page/76-visual report layout:
 
 ```powershell
@@ -65,10 +73,10 @@ After obtaining the locked pbi-tools Desktop executable, Mono.Cecil 0.11.5, and 
 
 Use the same three paths with `./scripts/verify-artifact.ps1 -Extractor Desktop` to re-extract the built PBIT and verify its Mashup, model, 10 pages, and 76 visuals against source.
 
-`tools/pbi-tools.lock.json` records the reviewed versions and SHA-256 values. `artifacts/SHA256SUMS.txt` records the release artifact hash.
+`tools/pbi-tools.lock.json` and `tools/power-query-sdk.lock.json` record the reviewed versions and SHA-256 values. `artifacts/SHA256SUMS.txt` records the release artifact hash.
 
 ## Verification boundary
 
-Automated CI checks statically validate the EN/DE/NL/FR fixture shapes, fixed internal headers and dates, presence of sanitized negative fixtures, source/model parity, archive structure, embedded Mashup/model parity, page count, visual count, and artifact checksum. Locked Desktop verification additionally re-extracts and compares the full report, model, and Mashup trees. Neither path executes the fixtures in the Power Query engine. A live refresh against a reachable iTop instance has not been performed in this repository environment; do not interpret the checks as proof of runtime transformations, production credentials, connectivity, or instance permissions.
+Automated CI statically validates the EN/DE/NL/FR fixture shapes, fixed internal headers and dates, sanitized negative fixtures, source/model parity, archive structure, embedded Mashup/model parity, page count, visual count, artifact checksum, and absence of cached or environment-specific personal data. It also executes the production URL builder in Microsoft's Power Query runtime against six deterministic cases. Locked Desktop verification additionally re-extracts and compares the full report, model, and Mashup trees. A live refresh against a reachable iTop instance has not been performed in this repository environment; do not interpret these checks as proof of production credentials, connectivity, instance permissions, or end-to-end live refresh.
 
 The Query Phrasebook extension is maintained at [dutch2005/combodo-powerbi-integration](https://github.com/dutch2005/combodo-powerbi-integration).
